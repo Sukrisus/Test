@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 //        Looper.prepare();
         TextView listener = findViewById(R.id.listener);
         Button  mbl2_button = findViewById(R.id.mbl2_load);
-        Button draco_button = findViewById(R.id.draco_load);
         Handler handler = new Handler(Looper.getMainLooper());
         mbl2_button.setOnClickListener(new View.OnClickListener()
         {
@@ -54,20 +53,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                
                 startLauncher(handler, listener, "launcher_mbl2.dex", MC_PACKAGE_NAME);
                 
-            }
-        });
-        
-        draco_button.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                                
-                startLauncher(handler, listener, "launcher_draco.dex", MC_PACKAGE_NAME);    
             }
         });
     // Looper.loop();
