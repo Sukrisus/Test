@@ -1,99 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-	Welcome to LayoutEditor!
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-	We are proud to present our innovative layout generator app that
-	allows users to create and customize stunning layouts in no time.
-	With LayoutEditor, you can easily create beautiful and custom
-	layouts that are tailored to fit your unique needs.
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-	Thank you for using LayoutEditor and we hope you enjoy our app!
--->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/linearlayout"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="8dp">
-
-	<TextView
-		android:id="@+id/textview"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/welcome"
-		android:textSize="19sp"
-		android:gravity="center_horizontal" />
-
-	<LinearLayout
-		android:id="@+id/tablelayout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"		
-		android:orientation="vertical"
-		android:padding="8dp"
-		android:background="#FF000000">
-
-		<TextView
-			android:id="@+id/textview1"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/mbl2_desc" />
-
-		<Button
-			android:id="@+id/mbl2_load"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Load with mbl2" />
-
-	</LinearLayout>
-
-
-
-	<LinearLayout
-		android:id="@+id/linearlayout1"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:padding="8dp">
-
-		<TextView
-			android:id="@+id/textview3"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/mc_pkgname" />
-
-		<EditText
-			android:id="@+id/mc_pkgname"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:hint="Package name of Minecraft"
-			android:text="com.mojang.minecraftpe"
-			android:inputType="text" />
-
-	</LinearLayout>
-
-	<TableLayout
-		android:id="@+id/tablelayout2"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="8dp">
-
-		<TextView
-			android:id="@+id/textview4"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Launcher logs here:"
-			android:gravity="center_horizontal"
-			android:textSize="19sp" />
-
-		<TextView
-			android:id="@+id/listener"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="   " />
-
-	</TableLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
