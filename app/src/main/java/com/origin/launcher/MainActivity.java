@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         TextView listener = findViewById(R.id.listener);
         Button  mbl2_button = findViewById(R.id.mbl2_load);
         Button draco_button = findViewById(R.id.draco_load);
+        EditText mcPackageEditText = findViewById(R.id.mc_pkgname);
+        mcPackageEditText.setText(MC_PACKAGE_NAME);
         Handler handler = new Handler(Looper.getMainLooper());
         mbl2_button.setOnClickListener(new View.OnClickListener()
         {
@@ -54,8 +57,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                
-                startLauncher(handler, listener, "launcher_mbl2.dex", MC_PACKAGE_NAME);
+                draco_button.setEnabled(false);
+                String mcPackageName = mcPackageEditText.getText().toString().trim();
+                if (mcPackageName.isEmpty()) {
+                    mcPackageName = MC_PACKAGE_NAME;
+                }
+                startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName);
                 
             }
         });
@@ -66,8 +73,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                                
-                startLauncher(handler, listener, "launcher_draco.dex", MC_PACKAGE_NAME);    
+                draco_button.setEnabled(false);
+                String mcPackageName = mcPackageEditText.getText().toString().trim();
+                if (mcPackageName.isEmpty()) {
+                    mcPackageName = MC_PACKAGE_NAME;
+                }
+                startLauncher(handler, listener, "launcher_draco.dex", mcPackageName);    
             }
         });
     // Looper.loop();

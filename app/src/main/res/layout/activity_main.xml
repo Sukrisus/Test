@@ -17,35 +17,44 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:padding="8dp">
+	android:padding="16dp"
+	android:background="#FF121212">
 
 	<TextView
 		android:id="@+id/textview"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/welcome"
-		android:textSize="19sp"
-		android:gravity="center_horizontal" />
+		android:textSize="20sp"
+		android:textColor="#FFFFFFFF"
+		android:gravity="center_horizontal"
+		android:layout_marginBottom="16dp" />
 
 	<LinearLayout
 		android:id="@+id/tablelayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"		
 		android:orientation="vertical"
-		android:padding="8dp"
-		android:background="#FF000000">
+		android:padding="16dp"
+		android:background="#FF1E1E1E"
+		android:layout_marginBottom="8dp">
 
 		<TextView
 			android:id="@+id/textview1"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/mbl2_desc" />
+			android:text="@string/mbl2_desc"
+			android:textColor="#FFCCCCCC"
+			android:layout_marginBottom="8dp" />
 
 		<Button
 			android:id="@+id/mbl2_load"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Load with mbl2" />
+			android:text="Load with mbl2"
+			android:background="#FF333333"
+			android:textColor="#FFFFFFFF"
+			android:padding="12dp" />
 
 	</LinearLayout>
 
@@ -54,20 +63,26 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"		
-		android:padding="8dp"
-		android:background="#FF000000">
+		android:padding="16dp"
+		android:background="#FF1E1E1E"
+		android:layout_marginBottom="16dp">
 
 		<TextView
 			android:id="@+id/textview2"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/draco_desc" />
+			android:text="@string/draco_desc"
+			android:textColor="#FFCCCCCC"
+			android:layout_marginBottom="8dp" />
 
 		<Button
 			android:id="@+id/draco_load"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Load with draco" />
+			android:text="Load with draco"
+			android:background="#FF333333"
+			android:textColor="#FFFFFFFF"
+			android:padding="12dp" />
 
 	</LinearLayout>
 
@@ -75,29 +90,40 @@
 		android:id="@+id/linearlayout1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:padding="8dp">
+		android:orientation="vertical"
+		android:padding="16dp"
+		android:background="#FF1E1E1E"
+		android:layout_marginBottom="16dp">
 
 		<TextView
 			android:id="@+id/textview3"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/mc_pkgname" />
+			android:text="@string/mc_pkgname"
+			android:textColor="#FFCCCCCC"
+			android:layout_marginBottom="8dp" />
 
 		<EditText
 			android:id="@+id/mc_pkgname"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:hint="Package name of Minecraft"
-			android:inputType="text" />
+			android:inputType="text"
+			android:background="#FF333333"
+			android:textColor="#FFFFFFFF"
+			android:textColorHint="#FF888888"
+			android:padding="12dp" />
 
 	</LinearLayout>
 
-	<TableLayout
+	<LinearLayout
 		android:id="@+id/tablelayout2"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="8dp">
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:orientation="vertical"
+		android:padding="16dp"
+		android:background="#FF1E1E1E">
 
 		<TextView
 			android:id="@+id/textview4"
@@ -105,14 +131,27 @@
 			android:layout_height="wrap_content"
 			android:text="Launcher logs here:"
 			android:gravity="center_horizontal"
-			android:textSize="19sp" />
+			android:textSize="16sp"
+			android:textColor="#FFFFFFFF"
+			android:layout_marginBottom="8dp" />
 
-		<TextView
-			android:id="@+id/listener"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="   " />
+		<ScrollView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="#FF0A0A0A"
+			android:padding="8dp">
 
-	</TableLayout>
+			<TextView
+				android:id="@+id/listener"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="   "
+				android:textColor="#FFCCCCCC"
+				android:fontFamily="monospace"
+				android:textSize="12sp" />
+
+		</ScrollView>
+
+	</LinearLayout>
 
 </LinearLayout>
