@@ -252,8 +252,10 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void launchMinecraft(ApplicationInfo mcInfo) throws ClassNotFoundException {
-        Class<?> mcLauncherClass = Class.forName("com.mojang.minecraftpe.Launcher", true, getClass().getClassLoader());
+    private void launchMinecraft(ApplicationInfo mcInfo) throws ClassNotFoundException, PackageManager.NameNotFoundException {
+        // Use the Minecraft package's class loader instead of our own
+        ClassLoader mcClassLoader = requireContext().createPackageContext(mcInfo.packageName, 0).getClassLoader();
+        Class<?> mcLauncherClass = Class.forName("com.mojang.minecraftpe.Launcher", true, mcClassLoader);
         Intent mcIntent = new Intent(requireContext(), mcLauncherClass);
         mcIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mcIntent);
