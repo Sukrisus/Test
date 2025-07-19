@@ -101,8 +101,10 @@ public class HomeFragment extends Fragment {
                 };
                 launchMinecraft(mcInfo);
             } catch (Exception e) {
-                String logMessage = e.getCause() != null ? e.getCause().toString() : e.toString();                
-                handler.post(() -> listener.setText("Launching failed: " + logMessage));                
+                String logMessage = e.getCause() != null ? e.getCause().toString() : e.toString();
+                String fullError = "Launching failed: " + logMessage + "\nStack trace: " + android.util.Log.getStackTraceString(e);
+                handler.post(() -> listener.setText(fullError));
+                android.util.Log.e("HomeFragment", "Launch error", e);
             }
         });    
     }
@@ -129,7 +131,25 @@ public class HomeFragment extends Fragment {
 
     private void processDexFiles(ApplicationInfo mcInfo, File cacheDexDir, @NotNull Object pathList, @NotNull Handler handler, TextView listener, String launcherDexName) throws Exception {
         Method addDexPath = pathList.getClass().getDeclaredMethod("addDexPath", String.class, File.class);
+        
+        // Ensure the cache directory exists
+        if (!cacheDexDir.exists()) {
+            if (!cacheDexDir.mkdirs()) {
+                throw new IOException("Failed to create cache directory: " + cacheDexDir.getAbsolutePath());
+            }
+            handler.post(() -> listener.append("\n-> Created cache directory: " + cacheDexDir.getAbsolutePath()));
+        }
+        
         File launcherDex = new File(cacheDexDir, launcherDexName);
+
+        // Check if asset exists
+        try {
+            requireContext().getAssets().open(launcherDexName).close();
+            handler.post(() -> listener.append("\n-> Asset " + launcherDexName + " found"));
+        } catch (IOException e) {
+            handler.post(() -> listener.append("\n-> ERROR: Asset " + launcherDexName + " not found"));
+            throw e;
+        }
 
         copyFile(requireContext().getAssets().open(launcherDexName), launcherDex);
         handler.post(() -> listener.append("\n-> " + launcherDexName + " copied to " + launcherDex.getAbsolutePath()));
@@ -240,6 +260,14 @@ public class HomeFragment extends Fragment {
     }
 
     private static void copyFile(InputStream from, @NotNull File to) throws IOException {
+        // Ensure parent directory exists
+        File parentDir = to.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("Failed to create parent directory: " + parentDir.getAbsolutePath());
+            }
+        }
+        
         try (FileOutputStream out = new FileOutputStream(to)) {
             byte[] buffer = new byte[1024];
             int length;
