@@ -59,7 +59,14 @@ public class MainActivity extends AppCompatActivity {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
                 final String mcPackageName = mcPackageEditText.getText().toString().trim().isEmpty() ? MC_PACKAGE_NAME : mcPackageEditText.getText().toString().trim();
-                startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName);
+                try {
+                    InputStream assetStream = getAssets().open("launcher_mbl2.dex");
+                    startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName, assetStream);
+                } catch (Exception e) {
+                    handler.post(() -> listener.setText("Failed to open asset: " + e.getMessage()));
+                    mbl2_button.setEnabled(true);
+                    draco_button.setEnabled(true);
+                }
                 
             }
         });
@@ -72,12 +79,19 @@ public class MainActivity extends AppCompatActivity {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
                 final String mcPackageName = mcPackageEditText.getText().toString().trim().isEmpty() ? MC_PACKAGE_NAME : mcPackageEditText.getText().toString().trim();
-                startLauncher(handler, listener, "launcher_draco.dex", mcPackageName);    
+                try {
+                    InputStream assetStream = getAssets().open("launcher_draco.dex");
+                    startLauncher(handler, listener, "launcher_draco.dex", mcPackageName, assetStream);
+                } catch (Exception e) {
+                    handler.post(() -> listener.setText("Failed to open asset: " + e.getMessage()));
+                    mbl2_button.setEnabled(true);
+                    draco_button.setEnabled(true);
+                }
             }
         });
     // Looper.loop();
 }
-    private void startLauncher(Handler handler, TextView listener, String launcherDexName, String mcPackageName) {    
+    private void startLauncher(Handler handler, TextView listener, String launcherDexName, String mcPackageName, InputStream assetStream) {    
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
 //                Looper.prepare();
@@ -91,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 };
                 Object pathList = getPathList(getClassLoader());
-                processDexFiles(mcInfo, cacheDexDir, pathList, handler, listener, launcherDexName);
+                processDexFiles(mcInfo, cacheDexDir, pathList, handler, listener, launcherDexName, assetStream);
                 if (!processNativeLibraries(mcInfo, pathList, handler, listener)) {
                     return;
                 };
@@ -106,7 +120,13 @@ public class MainActivity extends AppCompatActivity {
     }
     @SuppressLint("SetTextI18n")
     private void handleCacheCleaning(@NotNull File cacheDexDir, Handler handler, TextView listener) {
-        if (cacheDexDir.exists() && cacheDexDir.isDirectory()) {
+        if (!cacheDexDir.exists()) {
+            if (cacheDexDir.mkdirs()) {
+                handler.post(() -> listener.setText("-> Created cache directory: " + cacheDexDir.getAbsolutePath()));
+            } else {
+                handler.post(() -> listener.setText("-> Failed to create cache directory: " + cacheDexDir.getAbsolutePath()));
+            }
+        } else if (cacheDexDir.isDirectory()) {
             handler.post(() -> listener.setText("-> " + cacheDexDir.getAbsolutePath() + " not empty, do cleaning"));
             for (File file : Objects.requireNonNull(cacheDexDir.listFiles())) {
                 if (file.delete()) {
@@ -124,12 +144,17 @@ public class MainActivity extends AppCompatActivity {
         return pathListField.get(classLoader);
     }
 
-    private void processDexFiles(ApplicationInfo mcInfo, File cacheDexDir, @NotNull Object pathList, @NotNull Handler handler, TextView listener, String launcherDexName) throws Exception {
+    private void processDexFiles(ApplicationInfo mcInfo, File cacheDexDir, @NotNull Object pathList, @NotNull Handler handler, TextView listener, String launcherDexName, InputStream assetStream) throws Exception {
         Method addDexPath = pathList.getClass().getDeclaredMethod("addDexPath", String.class, File.class);
         File launcherDex = new File(cacheDexDir, launcherDexName);
 
-        copyFile(getAssets().open(launcherDexName), launcherDex);
-        handler.post(() -> listener.append("\n-> " + launcherDexName + " copied to " + launcherDex.getAbsolutePath()));
+        try {
+            copyFile(assetStream, launcherDex);
+            handler.post(() -> listener.append("\n-> " + launcherDexName + " copied to " + launcherDex.getAbsolutePath()));
+        } catch (Exception e) {
+            handler.post(() -> listener.append("\n-> Failed to copy " + launcherDexName + ": " + e.getMessage()));
+            throw e;
+        }
 
         if (launcherDex.setReadOnly()) {
             addDexPath.invoke(pathList, launcherDex.getAbsolutePath(), null);
