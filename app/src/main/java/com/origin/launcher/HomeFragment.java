@@ -9,10 +9,10 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Build;
 import androidx.fragment.app.Fragment;
@@ -40,7 +40,8 @@ import android.os.Looper;
 
 public class HomeFragment extends Fragment {
 
-    private static final String MC_PACKAGE_NAME = "com.mojang.minecraftpe";
+    private static final String PREF_MC_PACKAGE_NAME = "mc_package_name";
+    private static final String DEFAULT_MC_PACKAGE = "com.mojang.minecraftpe";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,11 +62,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
-                EditText mcPackageEdit = view.findViewById(R.id.mc_pkgname);
-                String mcPackageName = mcPackageEdit.getText().toString().trim();
-                if (mcPackageName.isEmpty()) {
-                    mcPackageName = MC_PACKAGE_NAME; // fallback to default
-                }
+                SharedPreferences prefs = requireContext().getSharedPreferences("OriginClientPrefs", 0);
+                String mcPackageName = prefs.getString(PREF_MC_PACKAGE_NAME, DEFAULT_MC_PACKAGE);
                 startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName);
             }
         });
@@ -75,11 +73,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
-                EditText mcPackageEdit = view.findViewById(R.id.mc_pkgname);
-                String mcPackageName = mcPackageEdit.getText().toString().trim();
-                if (mcPackageName.isEmpty()) {
-                    mcPackageName = MC_PACKAGE_NAME; // fallback to default
-                }
+                SharedPreferences prefs = requireContext().getSharedPreferences("OriginClientPrefs", 0);
+                String mcPackageName = prefs.getString(PREF_MC_PACKAGE_NAME, DEFAULT_MC_PACKAGE);
                 startLauncher(handler, listener, "launcher_draco.dex", mcPackageName);    
             }
         });
