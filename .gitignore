@@ -14,3 +14,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# APK files
+*.apk
+*.aab
+app/build/outputs/apk/
+app/build/outputs/bundle/
