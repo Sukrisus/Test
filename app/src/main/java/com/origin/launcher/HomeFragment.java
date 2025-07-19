@@ -177,13 +177,9 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean processNativeLibraries(ApplicationInfo mcInfo, @NotNull Object pathList, @NotNull Handler handler, TextView listener) throws Exception {
-        FileInputStream inStream = new FileInputStream(getApkWithLibs(mcInfo));
-        BufferedInputStream bufInStream = new BufferedInputStream(inStream);
-        ZipInputStream inZipStream = new ZipInputStream(bufInStream);
-        if (!checkLibCompatibility(inZipStream)) {
-            handler.post(() -> alertAndExit("Wrong minecraft architecture", "The minecraft you have installed does not support the same main architecture (" + Build.SUPPORTED_ABIS[0] + ") your device uses, mbloader cant work with it"));
-            return false;
-        } 		    
+        // Skip architecture check - force load anyway
+        handler.post(() -> listener.append("\n-> Skipping architecture check - forcing load"));
+        
         Method addNativePath = pathList.getClass().getDeclaredMethod("addNativePath", Collection.class);
         ArrayList<String> libDirList = new ArrayList<>();
         File libdir = new File(mcInfo.nativeLibraryDir);
