@@ -9,7 +9,10 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.content.Intent;
+import android.content.SharedPreferences;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -41,7 +44,6 @@ import android.os.Looper;
 
 public class HomeFragment extends Fragment {
 
-    private static final String MC_PACKAGE_NAME = "com.mojang.minecraftpe";
     private TextView listener;
     private Button mbl2_button;
 
@@ -58,11 +60,19 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
                 listener.setText("Starting Minecraft launcher...");
-                startLauncher(handler, listener, "launcher_mbl2.dex", MC_PACKAGE_NAME);
+                
+                // Get package name from settings
+                String packageName = getPackageNameFromSettings();
+                startLauncher(handler, listener, "launcher_mbl2.dex", packageName);
             }
         });
         
         return view;
+    }
+
+    private String getPackageNameFromSettings() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("settings", 0);
+        return prefs.getString("mc_package_name", "com.mojang.minecraftpe");
     }
 
     private void startLauncher(Handler handler, TextView listener, String launcherDexName, String mcPackageName) {    
