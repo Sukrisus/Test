@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -59,8 +60,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                
-                startLauncher(handler, listener, "launcher_mbl2.dex", MC_PACKAGE_NAME);
+                draco_button.setEnabled(false);
+                EditText mcPackageEdit = view.findViewById(R.id.mc_pkgname);
+                String mcPackageName = mcPackageEdit.getText().toString().trim();
+                if (mcPackageName.isEmpty()) {
+                    mcPackageName = MC_PACKAGE_NAME; // fallback to default
+                }
+                startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName);
             }
         });
         
@@ -68,8 +74,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
-                draco_button.setEnabled(false);                                
-                startLauncher(handler, listener, "launcher_draco.dex", MC_PACKAGE_NAME);    
+                draco_button.setEnabled(false);
+                EditText mcPackageEdit = view.findViewById(R.id.mc_pkgname);
+                String mcPackageName = mcPackageEdit.getText().toString().trim();
+                if (mcPackageName.isEmpty()) {
+                    mcPackageName = MC_PACKAGE_NAME; // fallback to default
+                }
+                startLauncher(handler, listener, "launcher_draco.dex", mcPackageName);    
             }
         });
         

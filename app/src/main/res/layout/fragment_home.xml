@@ -78,7 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Package name of Minecraft"
-            android:inputType="text" />
+            android:inputType="text"
+            android:text="com.mojang.minecraftpe" />
 
     </LinearLayout>
 
