@@ -6,73 +6,99 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:padding="16dp"
-	android:gravity="center">
+	android:padding="16dp">
 
 	<TextView
 		android:id="@+id/textview"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="Origin Client"
-		android:textSize="28sp"
+		android:textSize="24sp"
 		android:textStyle="bold"
 		android:gravity="center_horizontal"
-		android:layout_marginBottom="32dp" />
+		android:layout_marginBottom="24dp" />
 
-	<LinearLayout
-		android:id="@+id/tablelayout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"		
-		android:orientation="vertical"
-		android:padding="16dp"
-		android:background="@drawable/rounded_card_background"
-		android:layout_marginBottom="16dp">
-
-		<TextView
-			android:id="@+id/textview1"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/mbl2_desc"
-			android:textSize="14sp"
-			android:layout_marginBottom="16dp" />
-
-		<Button
-			android:id="@+id/mbl2_load"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Launch Minecraft"
-			android:textSize="16sp"
-			android:padding="12dp"
-			android:background="@drawable/button_background"
-			android:textColor="@android:color/white" />
-
-	</LinearLayout>
-
-	<TableLayout
-		android:id="@+id/tablelayout2"
+	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="8dp">
+		android:layout_marginBottom="16dp"
+		app:cardCornerRadius="12dp"
+		app:cardElevation="4dp"
+		app:cardBackgroundColor="#2C2C2C">
 
-		<TextView
-			android:id="@+id/textview4"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="Launcher logs:"
-			android:gravity="center_horizontal"
-			android:textSize="16sp"
-			android:layout_marginBottom="8dp" />
+			android:orientation="vertical"
+			android:padding="16dp">
 
-		<TextView
-			android:id="@+id/listener"
+			<TextView
+				android:id="@+id/textview1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/mbl2_desc"
+				android:textSize="14sp"
+				android:layout_marginBottom="16dp" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/mbl2_load"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Launch Minecraft"
+				android:textSize="16sp"
+				app:cornerRadius="8dp"
+				style="@style/Widget.Material3.Button" />
+
+		</LinearLayout>
+
+	</com.google.android.material.card.MaterialCardView>
+
+	<com.google.android.material.card.MaterialCardView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		app:cardCornerRadius="12dp"
+		app:cardElevation="4dp"
+		app:cardBackgroundColor="#1A1A1A">
+
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Ready to launch Minecraft"
-			android:textSize="12sp"
-			android:background="@drawable/log_background"
-			android:padding="8dp"
-			android:scrollbars="vertical" />
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:padding="16dp">
 
-	</TableLayout>
+			<TextView
+				android:id="@+id/textview4"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Launcher Logs"
+				android:gravity="center_horizontal"
+				android:textSize="16sp"
+				android:textStyle="bold"
+				android:layout_marginBottom="12dp" />
+
+			<ScrollView
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:background="@drawable/log_background"
+				android:padding="12dp"
+				android:scrollbars="vertical">
+
+				<TextView
+					android:id="@+id/listener"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="Ready to launch Minecraft"
+					android:textSize="12sp"
+					android:textColor="#CCCCCC"
+					android:fontFamily="monospace"
+					android:lineSpacingExtra="2dp" />
+
+			</ScrollView>
+
+		</LinearLayout>
+
+	</com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
