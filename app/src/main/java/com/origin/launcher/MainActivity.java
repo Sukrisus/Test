@@ -1,4 +1,4 @@
-package io.bambosan.mbloader;
+package com.origin.launcher;
 
 import android.content.DialogInterface;
 import org.jetbrains.annotations.NotNull;

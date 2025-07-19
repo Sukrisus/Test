@@ -1,4 +1,4 @@
-package io.bambosan.mbloader;
+package com.origin.launcher;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -20,6 +20,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("io.bambosan.iseng", appContext.getPackageName());
+        assertEquals("com.origin.launcher", appContext.getPackageName());
     }
 }
