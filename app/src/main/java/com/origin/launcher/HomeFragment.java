@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mbl2_button.setEnabled(false);
+                listener.setText("Starting Minecraft launcher...");
                 startLauncher(handler, listener, "launcher_mbl2.dex", MC_PACKAGE_NAME);
             }
         });
@@ -67,24 +68,47 @@ public class HomeFragment extends Fragment {
     private void startLauncher(Handler handler, TextView listener, String launcherDexName, String mcPackageName) {    
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
+                // Check if fragment is still attached
+                if (!isAdded()) {
+                    return;
+                }
+                
                 File cacheDexDir = new File(requireActivity().getCodeCacheDir(), "dex");
                 handleCacheCleaning(cacheDexDir, handler, listener);
+                
                 ApplicationInfo mcInfo = null;
                 try {
                     mcInfo = requireActivity().getPackageManager().getApplicationInfo(mcPackageName, PackageManager.GET_META_DATA);
+                    final ApplicationInfo finalMcInfo = mcInfo;
+                    handler.post(() -> listener.append("\n-> Found Minecraft at: " + finalMcInfo.sourceDir));
                 } catch(Exception e) {
                     handler.post(() -> alertAndExit("Minecraft cant be found", "Perhaps you dont have it installed?"));
                     return;
                 };
+                
                 Object pathList = getPathList(requireActivity().getClassLoader());
                 processDexFiles(mcInfo, cacheDexDir, pathList, handler, listener, launcherDexName);
                 if (!processNativeLibraries(mcInfo, pathList, handler, listener)) {
                     return;
                 };
-                launchMinecraft(mcInfo);
+                
+                handler.post(() -> listener.append("\n-> Launching Minecraft..."));
+                
+                // Final check before launching
+                if (isAdded()) {
+                    launchMinecraft(mcInfo);
+                } else {
+                    handler.post(() -> {
+                        listener.setText("Fragment no longer attached, cannot launch Minecraft");
+                        mbl2_button.setEnabled(true);
+                    });
+                }
             } catch (Exception e) {
                 String logMessage = e.getCause() != null ? e.getCause().toString() : e.toString();                
-                handler.post(() -> listener.setText("Launching failed: " + logMessage));                
+                handler.post(() -> {
+                    listener.setText("Launching failed: " + logMessage);
+                    mbl2_button.setEnabled(true);
+                });                
             }
         });    
     }
@@ -119,7 +143,10 @@ public class HomeFragment extends Fragment {
         if (launcherDex.setReadOnly()) {
             addDexPath.invoke(pathList, launcherDex.getAbsolutePath(), null);
             handler.post(() -> listener.append("\n-> " + launcherDexName + " added to dex path list"));
+        } else {
+            throw new Exception("Failed to set launcher dex as read-only");
         }
+        
         ArrayList<String> copiedDexes = new ArrayList<String>();
         try (ZipFile zipFile = new ZipFile(mcInfo.sourceDir)) {
             for (int i = 10; i >= 0; i--) {
@@ -131,10 +158,14 @@ public class HomeFragment extends Fragment {
                     if (mcDex.setReadOnly()) {
                         addDexPath.invoke(pathList, mcDex.getAbsolutePath(), null);
                         copiedDexes.add(dexName);
+                    } else {
+                        handler.post(() -> listener.append("\n-> Warning: Failed to set " + dexName + " as read-only"));
                     }
                 }
             }
-        } catch (Throwable th) {}    
+        } catch (Throwable th) {
+            handler.post(() -> listener.append("\n-> Warning: Error processing dex files: " + th.getMessage()));
+        }    
         handler.post(() -> listener.append("\n-> Dex files " + copiedDexes.toString() + " copied and added to dex path list"));        
     }
 
@@ -232,7 +263,10 @@ public class HomeFragment extends Fragment {
 
     private void launchMinecraft(ApplicationInfo mcInfo) throws ClassNotFoundException {
         Class<?> launcherClass = requireActivity().getClassLoader().loadClass("com.mojang.minecraftpe.Launcher");
-        Intent mcActivity = requireActivity().getIntent().setClass(requireActivity(), launcherClass);
+        
+        // Create a new intent for Minecraft to ensure it launches in a new instance
+        Intent mcActivity = new Intent(requireActivity(), launcherClass);
+        mcActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mcActivity.putExtra("MC_SRC", mcInfo.sourceDir);
 
         if (mcInfo.splitSourceDirs != null) {
@@ -240,6 +274,10 @@ public class HomeFragment extends Fragment {
             Collections.addAll(listSrcSplit, mcInfo.splitSourceDirs);
             mcActivity.putExtra("MC_SPLIT_SRC", listSrcSplit);
         }
+        
+        // Add additional flags to ensure proper launch
+        mcActivity.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        
         startActivity(mcActivity);
         requireActivity().finish();
     }
