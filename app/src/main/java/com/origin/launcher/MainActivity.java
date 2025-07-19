@@ -1,4 +1,4 @@
-package io.bambosan.mbloader;
+package com.origin.launcher;
 
 import android.content.DialogInterface;
 import org.jetbrains.annotations.NotNull;
@@ -198,93 +198,81 @@ public class MainActivity extends AppCompatActivity {
                     alertDialog.show();         
      }
     private void loadUnextractedLibs(ApplicationInfo appInfo) throws Exception {
-		    FileInputStream inStream = new FileInputStream(getApkWithLibs(appInfo));
-		    BufferedInputStream bufInStream = new BufferedInputStream(inStream);
-		    ZipInputStream inZipStream = new ZipInputStream(bufInStream);
-		    String zipPath = "lib/" + Build.SUPPORTED_ABIS[0] + "/";
-		    String outPath = getCodeCacheDir().getAbsolutePath() + "/";
-		    File dir = new File(outPath);
-		    dir.mkdir();
-		    extractDir(appInfo, inZipStream, zipPath, outPath);
-	  }
-	  public String getApkWithLibs(ApplicationInfo pkg) throws PackageManager.NameNotFoundException
-	{
-		// get installed split's Names
-		String[] sn=pkg.splitSourceDirs;
-
-		// check whether if it's really split or not
-		if (sn != null && sn.length > 0)
-		{
-			String cur_abi = Build.SUPPORTED_ABIS[0].replace('-','_');
-			// search installed splits
-			for(String n:sn){
-				
-				 //check whether is the one required
-				if(n.contains(cur_abi)){
-				// yes, it's installed!
-					return n;
-				}
-			}
-		}
-		// couldn't find!
-		return pkg.sourceDir;
-	}
-	private static void extractDir(ApplicationInfo mcInfo, ZipInputStream zip, String zip_folder, String out_folder ) throws Exception{
+        FileInputStream inStream = new FileInputStream(getApkWithLibs(appInfo));
+        BufferedInputStream bufInStream = new BufferedInputStream(inStream);
+        ZipInputStream inZipStream = new ZipInputStream(bufInStream);
         ZipEntry ze = null;
-        while ((ze = zip.getNextEntry()) != null) {
-            if (ze.getName().startsWith(zip_folder) && !ze.getName().contains("c++_shared")) {
-				String strippedName = ze.getName().substring(zip_folder.length());
-				String path = out_folder + "/" + strippedName;
-				OutputStream out = new FileOutputStream(path);
-				BufferedOutputStream outBuf = new BufferedOutputStream(out);
-                byte[] buffer = new byte[9000];
+        String libDir = "lib/" + Build.SUPPORTED_ABIS[0] + "/";
+        while ((ze = inZipStream.getNextEntry()) != null) {
+            if (ze.getName().startsWith(libDir)) {
+                String fileName = ze.getName().substring(libDir.length());
+                File outFile = new File(getCodeCacheDir(), fileName);
+                FileOutputStream outStream = new FileOutputStream(outFile);
+                BufferedOutputStream bufOutStream = new BufferedOutputStream(outStream);
+                byte[] buffer = new byte[1024];
                 int len;
-                while ((len = zip.read(buffer)) != -1) {
-                    outBuf.write(buffer, 0, len);
+                while ((len = inZipStream.read(buffer)) > 0) {
+                    bufOutStream.write(buffer, 0, len);
                 }
-                outBuf.close();
+                bufOutStream.close();
+                outStream.close();
+                inZipStream.closeEntry();
             }
         }
-        zip.close();
+        inZipStream.close();
+        bufInStream.close();
+        inStream.close();
+    }
+	  public String getApkWithLibs(ApplicationInfo pkg) throws PackageManager.NameNotFoundException
+	{
+		if (pkg.sourceDir != null) {
+			return pkg.sourceDir;
+		}
+		throw new PackageManager.NameNotFoundException("No source dir found");
+	}
+    private static void extractDir(ApplicationInfo mcInfo, ZipInputStream zip, String zip_folder, String out_folder ) throws Exception{
+        ZipEntry ze = null;
+        while ((ze = zip.getNextEntry()) != null) {
+            if (ze.getName().startsWith(zip_folder)) {
+                String fileName = ze.getName().substring(zip_folder.length());
+                File outFile = new File(out_folder, fileName);
+                if (ze.isDirectory()) {
+                    outFile.mkdirs();
+                } else {
+                    outFile.getParentFile().mkdirs();
+                    FileOutputStream outStream = new FileOutputStream(outFile);
+                    BufferedOutputStream bufOutStream = new BufferedOutputStream(outStream);
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = zip.read(buffer)) > 0) {
+                        bufOutStream.write(buffer, 0, len);
+                    }
+                    bufOutStream.close();
+                    outStream.close();
+                }
+                zip.closeEntry();
+            }
+        }
     }
     private void launchMinecraft(ApplicationInfo mcInfo) throws ClassNotFoundException {
-        Class<?> launcherClass = getClassLoader().loadClass("com.mojang.minecraftpe.Launcher");
-        // We do this to preserve data that apps like file managers pass 
-        Intent mcActivity = getIntent().setClass(this, launcherClass);
-        mcActivity.putExtra("MC_SRC", mcInfo.sourceDir);
-
-        if (mcInfo.splitSourceDirs != null) {
-            ArrayList<String> listSrcSplit = new ArrayList<>();
-            Collections.addAll(listSrcSplit, mcInfo.splitSourceDirs);
-            mcActivity.putExtra("MC_SPLIT_SRC", listSrcSplit);
-        }
-        startActivity(mcActivity);
+        Class<?> launcherClass = Class.forName("com.mojang.minecraftpe.Launcher", false, getClassLoader());
+        Intent intent = new Intent(this, launcherClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
-
     private void handleException(@NotNull Exception e, @NotNull Intent fallbackActivity) {
-        String logMessage = e.getCause() != null ? e.getCause().toString() : e.toString();
-        fallbackActivity.putExtra("LOG_STR", logMessage);
+        fallbackActivity.putExtra("LOG_STR", e.toString());
         startActivity(fallbackActivity);
         finish();
     }
-
     private static void copyFile(InputStream from, @NotNull File to) throws IOException {
-        File parentDir = to.getParentFile();
-        if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
-            throw new IOException("Failed to create directories");
-        }
-        if (!to.exists() && !to.createNewFile()) {
-            throw new IOException("Failed to create new file");
-        }
-        try (BufferedInputStream input = new BufferedInputStream(from);
-             BufferedOutputStream output = new BufferedOutputStream(Files.newOutputStream(to.toPath()))) {
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = input.read(buffer)) != -1) {
-                output.write(buffer, 0, bytesRead);
+        try (FileOutputStream out = new FileOutputStream(to)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = from.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
             }
         }
     }
-    
 }

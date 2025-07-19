@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'io.bambosan.mbloader'
+    namespace 'com.origin.launcher'
     compileSdk 35
     buildToolsVersion = "35.0.0"
     defaultConfig {
-        applicationId "io.bambosan.mbloader"
+        applicationId "com.origin.launcher"
         minSdk 26
         targetSdk 35
         versionCode 11
@@ -28,6 +28,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
     externalNativeBuild {
         ndkBuild {

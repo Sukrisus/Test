@@ -1,4 +1,4 @@
-package io.bambosan.mbloader;
+package com.origin.launcher;
 
 import android.os.Bundle;
 
