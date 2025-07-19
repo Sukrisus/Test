@@ -58,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
-                String mcPackageName = mcPackageEditText.getText().toString().trim();
-                if (mcPackageName.isEmpty()) {
-                    mcPackageName = MC_PACKAGE_NAME;
-                }
+                final String mcPackageName = mcPackageEditText.getText().toString().trim().isEmpty() ? MC_PACKAGE_NAME : mcPackageEditText.getText().toString().trim();
                 startLauncher(handler, listener, "launcher_mbl2.dex", mcPackageName);
                 
             }
@@ -74,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 mbl2_button.setEnabled(false);
                 draco_button.setEnabled(false);
-                String mcPackageName = mcPackageEditText.getText().toString().trim();
-                if (mcPackageName.isEmpty()) {
-                    mcPackageName = MC_PACKAGE_NAME;
-                }
+                final String mcPackageName = mcPackageEditText.getText().toString().trim().isEmpty() ? MC_PACKAGE_NAME : mcPackageEditText.getText().toString().trim();
                 startLauncher(handler, listener, "launcher_draco.dex", mcPackageName);    
             }
         });
