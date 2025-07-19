@@ -90,7 +90,7 @@
 		android:id="@+id/linearlayout1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical"
+		android:orientation="horizontal"
 		android:padding="16dp"
 		android:background="#FF1E1E1E"
 		android:layout_marginBottom="16dp">
@@ -100,12 +100,11 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/mc_pkgname"
-			android:textColor="#FFCCCCCC"
-			android:layout_marginBottom="8dp" />
+			android:textColor="#FFCCCCCC" />
 
 		<EditText
 			android:id="@+id/mc_pkgname"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:hint="Package name of Minecraft"
 			android:inputType="text"
