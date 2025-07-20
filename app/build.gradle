@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'games.com.origin'
+    namespace 'com.origin.launcher'
     compileSdk 35
     buildToolsVersion = "35.0.0"
     defaultConfig {
-        applicationId "games.com.origin"
+        applicationId "com.origin.launcher"
         minSdk 26
         targetSdk 35
         versionCode 11
