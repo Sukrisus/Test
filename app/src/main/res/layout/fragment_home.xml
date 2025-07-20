@@ -14,11 +14,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="Origin Client"
-		android:textSize="28sp"
+		android:textSize="32sp"
 		android:textStyle="bold"
 		android:textColor="@color/onBackground"
 		android:gravity="center_horizontal"
-		android:layout_marginBottom="32dp" />
+		android:layout_marginBottom="32dp"
+		android:fontFamily="sans-serif-light" />
 
 	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
@@ -51,6 +52,7 @@
 				android:layout_height="wrap_content"
 				android:text="Launch Minecraft"
 				android:textSize="16sp"
+				android:textStyle="bold"
 				android:padding="16dp"
 				app:cornerRadius="28dp"
 				app:icon="@drawable/ic_play"
@@ -81,7 +83,7 @@
 				android:id="@+id/textview4"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="Launcher Logs"
+				android:text="Latest Logs"
 				android:gravity="center_horizontal"
 				android:textSize="18sp"
 				android:textStyle="bold"
@@ -109,10 +111,11 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:text="Ready to launch Minecraft"
-						android:textSize="14sp"
+						android:textSize="13sp"
 						android:textColor="@color/onSurfaceVariant"
 						android:fontFamily="monospace"
-						android:lineSpacingExtra="4dp" />
+						android:lineSpacingExtra="6dp"
+						android:letterSpacing="0.05" />
 
 				</ScrollView>
 

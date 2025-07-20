@@ -12,10 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="@color/onBackground"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="32dp"
+        android:fontFamily="sans-serif-light" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
