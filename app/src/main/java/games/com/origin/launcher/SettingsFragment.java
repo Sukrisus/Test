@@ -1,4 +1,4 @@
-package games.com.origin;
+package games.com.origin.launcher;
 
 import android.content.SharedPreferences;
 import android.os.Build;

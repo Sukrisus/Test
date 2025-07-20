@@ -1,4 +1,4 @@
-package games.com.origin;
+package games.com.origin.launcher;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
