@@ -79,16 +79,35 @@
 			android:orientation="vertical"
 			android:padding="24dp">
 
-			<TextView
-				android:id="@+id/textview4"
+			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="Latest Logs"
-				android:gravity="center_horizontal"
-				android:textSize="18sp"
-				android:textStyle="bold"
-				android:textColor="@color/onSurface"
-				android:layout_marginBottom="16dp" />
+				android:orientation="horizontal"
+				android:gravity="center_vertical"
+				android:layout_marginBottom="16dp">
+
+				<TextView
+					android:id="@+id/textview4"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Latest Logs"
+					android:textSize="18sp"
+					android:textStyle="bold"
+					android:textColor="@color/onSurface" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/share_logs_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Share"
+					android:textSize="12sp"
+					app:icon="@drawable/ic_share"
+					app:iconSize="16dp"
+					app:cornerRadius="20dp"
+					style="@style/Widget.Material3.Button.IconButton" />
+
+			</LinearLayout>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"

@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import androidx.core.content.FileProvider;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -28,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +49,7 @@ public class HomeFragment extends Fragment {
 
     private TextView listener;
     private Button mbl2_button;
+    private com.google.android.material.button.MaterialButton shareLogsButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class HomeFragment extends Fragment {
         
         listener = view.findViewById(R.id.listener);
         mbl2_button = view.findViewById(R.id.mbl2_load);
+        shareLogsButton = view.findViewById(R.id.share_logs_button);
         Handler handler = new Handler(Looper.getMainLooper());
         
         mbl2_button.setOnClickListener(new View.OnClickListener() {
@@ -70,12 +75,56 @@ public class HomeFragment extends Fragment {
         // Set initial log text
         listener.setText("Ready to launch Minecraft");
         
+        // Set up share button
+        shareLogsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareLogs();
+            }
+        });
+        
         return view;
     }
 
     private String getPackageNameFromSettings() {
         SharedPreferences prefs = requireContext().getSharedPreferences("settings", 0);
         return prefs.getString("mc_package_name", "com.mojang.minecraftpe");
+    }
+
+    private void shareLogs() {
+        try {
+            // Get the current log text
+            String logText = listener.getText().toString();
+            
+            // Create a temporary file
+            File logFile = new File(requireContext().getCacheDir(), "oclatestlog.txt");
+            FileWriter writer = new FileWriter(logFile);
+            writer.write(logText);
+            writer.close();
+            
+            // Create the sharing intent
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            
+            // Get the file URI using FileProvider
+            android.net.Uri fileUri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.origin.launcher.fileprovider",
+                logFile
+            );
+            
+            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Origin Client Logs");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "Origin Client Latest Logs");
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            
+            // Start the sharing activity
+            startActivity(Intent.createChooser(shareIntent, "Share Logs"));
+            
+        } catch (Exception e) {
+            // Show error message
+            android.widget.Toast.makeText(requireContext(), "Failed to share logs: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startLauncher(Handler handler, TextView listener, String launcherDexName, String mcPackageName) {    
