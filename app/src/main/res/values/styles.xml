@@ -9,8 +9,8 @@
 </style>
 
 <style name="Theme.Material3.Dark.NoActionBar.Custom" parent="Theme.Material3.Dark.NoActionBar">
-    <item name="android:statusBarColor">@color/primary</item>
-    <item name="android:navigationBarColor">@color/primary</item>
+    <item name="android:statusBarColor">@color/black</item>
+    <item name="android:navigationBarColor">@color/black</item>
     <item name="colorPrimary">@color/primary</item>
     <item name="colorOnPrimary">@color/onPrimary</item>
     <item name="colorPrimaryContainer">@color/primaryContainer</item>
