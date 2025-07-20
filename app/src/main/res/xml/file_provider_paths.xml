@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <cache-path name="shared_files" path="." />
-    <external-path name="games_folder" path="games/com.origin.launcher/logs" />
 </paths>

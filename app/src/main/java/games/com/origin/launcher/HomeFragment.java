@@ -51,12 +51,7 @@ public class HomeFragment extends Fragment {
     private Button mbl2_button;
     private com.google.android.material.button.MaterialButton shareLogsButton;
 
-    // Helper method to get the games data directory
-    private File getGamesDataDir() {
-        File base = new File("/storage/emulated/0/games/com.origin.launcher");
-        base.mkdirs();
-        return base;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -103,12 +98,8 @@ public class HomeFragment extends Fragment {
             // Get the current log text
             String logText = listener.getText().toString();
             
-            // Create logs directory in games folder
-            File logsDir = new File(getGamesDataDir(), "logs");
-            logsDir.mkdirs();
-            
-            // Create log file in games folder
-            File logFile = new File(logsDir, "oclatestlog.txt");
+            // Create a temporary file
+            File logFile = new File(requireContext().getCacheDir(), "oclatestlog.txt");
             FileWriter writer = new FileWriter(logFile);
             writer.write(logText);
             writer.close();
@@ -262,47 +253,7 @@ public class HomeFragment extends Fragment {
         }
         addNativePath.invoke(pathList, libDirList);
         handler.post(() -> listener.append("\n-> " + mcInfo.nativeLibraryDir + " added to native library directory path"));
-        
-        // Set up games folder for data storage
-        setupGamesFolder(handler, listener);
-        
         return true;
-    }
-    
-    private void setupGamesFolder(Handler handler, TextView listener) {
-        try {
-            // Use the helper method to get games data directory
-            File gamesDataDir = getGamesDataDir();
-            
-            if (!gamesDataDir.exists()) {
-                gamesDataDir.mkdirs();
-                handler.post(() -> listener.append("\n-> Created games folder: " + gamesDataDir.getAbsolutePath()));
-            } else {
-                handler.post(() -> listener.append("\n-> Using existing games folder: " + gamesDataDir.getAbsolutePath()));
-            }
-            
-            // Create subdirectories for different data types
-            File libsDir = new File(gamesDataDir, "libs");
-            File dataDir = new File(gamesDataDir, "data");
-            File logsDir = new File(gamesDataDir, "logs");
-            
-            libsDir.mkdirs();
-            dataDir.mkdirs();
-            logsDir.mkdirs();
-            
-            // Set system properties for custom paths
-            System.setProperty("java.library.path", libsDir.getAbsolutePath());
-            System.setProperty("app.data.dir", dataDir.getAbsolutePath());
-            System.setProperty("app.logs.dir", logsDir.getAbsolutePath());
-            
-            handler.post(() -> listener.append("\n-> Set up games folder structure:"));
-            handler.post(() -> listener.append("\n  - Libs: " + libsDir.getAbsolutePath()));
-            handler.post(() -> listener.append("\n  - Data: " + dataDir.getAbsolutePath()));
-            handler.post(() -> listener.append("\n  - Logs: " + logsDir.getAbsolutePath()));
-            
-        } catch (Exception e) {
-            handler.post(() -> listener.append("\n-> Warning: Could not set up games folder: " + e.getMessage()));
-        }
     }
 
     private static Boolean checkLibCompatibility(ZipInputStream zip) throws Exception{
