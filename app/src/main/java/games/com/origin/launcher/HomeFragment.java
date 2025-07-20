@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
             // Get the file URI using FileProvider
             android.net.Uri fileUri = FileProvider.getUriForFile(
                 requireContext(),
-                "com.origin.launcher.fileprovider",
+                "games.com.origin.launcher.fileprovider",
                 logFile
             );
             
@@ -251,7 +251,36 @@ public class HomeFragment extends Fragment {
         }
         addNativePath.invoke(pathList, libDirList);
         handler.post(() -> listener.append("\n-> " + mcInfo.nativeLibraryDir + " added to native library directory path"));
+        
+        // Set up games folder for data storage
+        setupGamesFolder(handler, listener);
+        
         return true;
+    }
+    
+    private void setupGamesFolder(Handler handler, TextView listener) {
+        try {
+            // Get external storage directory
+            File externalDir = requireContext().getExternalFilesDir(null);
+            if (externalDir != null) {
+                // Create games folder structure
+                File gamesDir = new File(externalDir.getParentFile(), "games");
+                File originDir = new File(gamesDir, "com.origin.launcher");
+                
+                if (!originDir.exists()) {
+                    originDir.mkdirs();
+                    handler.post(() -> listener.append("\n-> Created games folder: " + originDir.getAbsolutePath()));
+                } else {
+                    handler.post(() -> listener.append("\n-> Using existing games folder: " + originDir.getAbsolutePath()));
+                }
+                
+                // Set system property for native library path
+                System.setProperty("java.library.path", originDir.getAbsolutePath());
+                handler.post(() -> listener.append("\n-> Set native library path to games folder"));
+            }
+        } catch (Exception e) {
+            handler.post(() -> listener.append("\n-> Warning: Could not set up games folder: " + e.getMessage()));
+        }
     }
 
     private static Boolean checkLibCompatibility(ZipInputStream zip) throws Exception{
