@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
                  return true;
              }
          }
-         zip.close();
          return false;
      }
      private void alertAndExit(String issue, String description) {
