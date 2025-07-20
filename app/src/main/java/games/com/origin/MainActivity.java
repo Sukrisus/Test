@@ -1,4 +1,4 @@
-package com.origin.launcher;
+package games.com.origin;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

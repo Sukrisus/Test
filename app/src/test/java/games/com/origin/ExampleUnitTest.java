@@ -1,4 +1,4 @@
-package com.origin.launcher;
+package games.com.origin;
 
 import org.junit.Test;
 
