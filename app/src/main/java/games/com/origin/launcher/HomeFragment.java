@@ -51,6 +51,13 @@ public class HomeFragment extends Fragment {
     private Button mbl2_button;
     private com.google.android.material.button.MaterialButton shareLogsButton;
 
+    // Helper method to get the games data directory
+    private File getGamesDataDir() {
+        File base = new File("/storage/emulated/0/games/com.origin.launcher");
+        base.mkdirs();
+        return base;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -97,13 +104,7 @@ public class HomeFragment extends Fragment {
             String logText = listener.getText().toString();
             
             // Create logs directory in games folder
-            File externalStorageDir = new File("/storage/emulated/0");
-            if (!externalStorageDir.exists()) {
-                externalStorageDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
-            }
-            File gamesDir = new File(externalStorageDir, "games");
-            File originDir = new File(gamesDir, "com.origin.launcher");
-            File logsDir = new File(originDir, "logs");
+            File logsDir = new File(getGamesDataDir(), "logs");
             logsDir.mkdirs();
             
             // Create log file in games folder
@@ -270,28 +271,20 @@ public class HomeFragment extends Fragment {
     
     private void setupGamesFolder(Handler handler, TextView listener) {
         try {
-            // Get external storage root directory
-            File externalStorageDir = new File("/storage/emulated/0");
-            if (!externalStorageDir.exists()) {
-                // Fallback to Environment.getExternalStorageDirectory()
-                externalStorageDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
-            }
+            // Use the helper method to get games data directory
+            File gamesDataDir = getGamesDataDir();
             
-            // Create games folder structure
-            File gamesDir = new File(externalStorageDir, "games");
-            File originDir = new File(gamesDir, "com.origin.launcher");
-            
-            if (!originDir.exists()) {
-                originDir.mkdirs();
-                handler.post(() -> listener.append("\n-> Created games folder: " + originDir.getAbsolutePath()));
+            if (!gamesDataDir.exists()) {
+                gamesDataDir.mkdirs();
+                handler.post(() -> listener.append("\n-> Created games folder: " + gamesDataDir.getAbsolutePath()));
             } else {
-                handler.post(() -> listener.append("\n-> Using existing games folder: " + originDir.getAbsolutePath()));
+                handler.post(() -> listener.append("\n-> Using existing games folder: " + gamesDataDir.getAbsolutePath()));
             }
             
             // Create subdirectories for different data types
-            File libsDir = new File(originDir, "libs");
-            File dataDir = new File(originDir, "data");
-            File logsDir = new File(originDir, "logs");
+            File libsDir = new File(gamesDataDir, "libs");
+            File dataDir = new File(gamesDataDir, "data");
+            File logsDir = new File(gamesDataDir, "logs");
             
             libsDir.mkdirs();
             dataDir.mkdirs();
