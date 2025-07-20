@@ -24,5 +24,13 @@
     <item name="colorTertiaryContainer">@color/tertiaryContainer</item>
     <item name="colorOnTertiaryContainer">@color/onTertiaryContainer</item>
 </style>
+
+<style name="AppTitleStyle">
+    <item name="android:textSize">32sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/onBackground</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:fontFamily">sans-serif</item>
+</style>
   
 </resources>

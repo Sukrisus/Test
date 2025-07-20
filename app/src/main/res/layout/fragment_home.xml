@@ -14,12 +14,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="Origin Client"
-		android:textSize="32sp"
-		android:textStyle="bold"
-		android:textColor="@color/onBackground"
-		android:gravity="center_horizontal"
 		android:layout_marginBottom="32dp"
-		android:fontFamily="sans-serif-light" />
+		style="@style/AppTitleStyle" />
 
 	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
