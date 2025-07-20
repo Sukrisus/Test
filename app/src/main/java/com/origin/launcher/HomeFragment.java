@@ -67,6 +67,9 @@ public class HomeFragment extends Fragment {
             }
         });
         
+        // Set initial log text
+        listener.setText("Ready to launch Minecraft");
+        
         return view;
     }
 

@@ -64,8 +64,7 @@
 
 	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1"
+		android:layout_height="wrap_content"
 		app:cardCornerRadius="16dp"
 		app:cardElevation="8dp"
 		app:cardBackgroundColor="@color/surface"
@@ -74,7 +73,7 @@
 
 		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:padding="24dp">
 
@@ -91,8 +90,8 @@
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:minHeight="80dp"
 				app:cardCornerRadius="12dp"
 				app:cardBackgroundColor="@color/surfaceVariant"
 				app:strokeWidth="1dp"
@@ -100,9 +99,10 @@
 
 				<ScrollView
 					android:layout_width="match_parent"
-					android:layout_height="match_parent"
+					android:layout_height="wrap_content"
 					android:padding="16dp"
-					android:scrollbars="vertical">
+					android:scrollbars="vertical"
+					android:maxHeight="200dp">
 
 					<TextView
 						android:id="@+id/listener"
