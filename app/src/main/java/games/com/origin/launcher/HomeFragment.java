@@ -96,8 +96,18 @@ public class HomeFragment extends Fragment {
             // Get the current log text
             String logText = listener.getText().toString();
             
-            // Create a temporary file
-            File logFile = new File(requireContext().getCacheDir(), "oclatestlog.txt");
+            // Create logs directory in games folder
+            File externalStorageDir = new File("/storage/emulated/0");
+            if (!externalStorageDir.exists()) {
+                externalStorageDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
+            }
+            File gamesDir = new File(externalStorageDir, "games");
+            File originDir = new File(gamesDir, "com.origin.launcher");
+            File logsDir = new File(originDir, "logs");
+            logsDir.mkdirs();
+            
+            // Create log file in games folder
+            File logFile = new File(logsDir, "oclatestlog.txt");
             FileWriter writer = new FileWriter(logFile);
             writer.write(logText);
             writer.close();
@@ -260,24 +270,43 @@ public class HomeFragment extends Fragment {
     
     private void setupGamesFolder(Handler handler, TextView listener) {
         try {
-            // Get external storage directory
-            File externalDir = requireContext().getExternalFilesDir(null);
-            if (externalDir != null) {
-                // Create games folder structure
-                File gamesDir = new File(externalDir.getParentFile(), "games");
-                File originDir = new File(gamesDir, "com.origin.launcher");
-                
-                if (!originDir.exists()) {
-                    originDir.mkdirs();
-                    handler.post(() -> listener.append("\n-> Created games folder: " + originDir.getAbsolutePath()));
-                } else {
-                    handler.post(() -> listener.append("\n-> Using existing games folder: " + originDir.getAbsolutePath()));
-                }
-                
-                // Set system property for native library path
-                System.setProperty("java.library.path", originDir.getAbsolutePath());
-                handler.post(() -> listener.append("\n-> Set native library path to games folder"));
+            // Get external storage root directory
+            File externalStorageDir = new File("/storage/emulated/0");
+            if (!externalStorageDir.exists()) {
+                // Fallback to Environment.getExternalStorageDirectory()
+                externalStorageDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
             }
+            
+            // Create games folder structure
+            File gamesDir = new File(externalStorageDir, "games");
+            File originDir = new File(gamesDir, "com.origin.launcher");
+            
+            if (!originDir.exists()) {
+                originDir.mkdirs();
+                handler.post(() -> listener.append("\n-> Created games folder: " + originDir.getAbsolutePath()));
+            } else {
+                handler.post(() -> listener.append("\n-> Using existing games folder: " + originDir.getAbsolutePath()));
+            }
+            
+            // Create subdirectories for different data types
+            File libsDir = new File(originDir, "libs");
+            File dataDir = new File(originDir, "data");
+            File logsDir = new File(originDir, "logs");
+            
+            libsDir.mkdirs();
+            dataDir.mkdirs();
+            logsDir.mkdirs();
+            
+            // Set system properties for custom paths
+            System.setProperty("java.library.path", libsDir.getAbsolutePath());
+            System.setProperty("app.data.dir", dataDir.getAbsolutePath());
+            System.setProperty("app.logs.dir", logsDir.getAbsolutePath());
+            
+            handler.post(() -> listener.append("\n-> Set up games folder structure:"));
+            handler.post(() -> listener.append("\n  - Libs: " + libsDir.getAbsolutePath()));
+            handler.post(() -> listener.append("\n  - Data: " + dataDir.getAbsolutePath()));
+            handler.post(() -> listener.append("\n  - Logs: " + logsDir.getAbsolutePath()));
+            
         } catch (Exception e) {
             handler.post(() -> listener.append("\n-> Warning: Could not set up games folder: " + e.getMessage()));
         }
