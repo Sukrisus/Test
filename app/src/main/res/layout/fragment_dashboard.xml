@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -115,6 +119,52 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- File Management Card - Separate from Quick Stats -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/surface"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/outline">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File Management"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/onSurface"
+                android:layout_marginBottom="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/folderRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/surfaceVariant"
+                android:layout_marginBottom="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Backup &amp; Share"
+                android:icon="@android:drawable/ic_menu_save"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/onPrimary" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Recent Activity Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -150,4 +200,5 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
