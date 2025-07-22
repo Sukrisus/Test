@@ -114,17 +114,44 @@ public class DashboardFragment extends Fragment {
 
     private void backupAndShare(File rootDir) {
         try {
+            // Check if source directory exists and has content
+            if (!rootDir.exists()) {
+                Toast.makeText(requireContext(), "Minecraft data directory not found: " + rootDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                return;
+            }
+            
+            File[] files = rootDir.listFiles();
+            if (files == null || files.length == 0) {
+                Toast.makeText(requireContext(), "No files found to backup in: " + rootDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                return;
+            }
+            
             File cacheDir = requireContext().getCacheDir();
             File zipFile = new File(cacheDir, "mojang_backup.zip");
+            
+            // Delete existing zip file if it exists
+            if (zipFile.exists()) {
+                zipFile.delete();
+            }
+            
+            Toast.makeText(requireContext(), "Creating backup...", Toast.LENGTH_SHORT).show();
             zipDirectory(rootDir, zipFile);
+            
+            if (!zipFile.exists() || zipFile.length() == 0) {
+                Toast.makeText(requireContext(), "Failed to create backup file", Toast.LENGTH_LONG).show();
+                return;
+            }
+            
             Uri fileUri = FileProvider.getUriForFile(requireContext(), "com.origin.launcher.fileprovider", zipFile);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("application/zip");
             shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(shareIntent, "Share Backup Zip"));
+            Toast.makeText(requireContext(), "Backup created successfully!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(requireContext(), "Backup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace(); // This will help with debugging
         }
     }
 
