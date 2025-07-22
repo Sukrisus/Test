@@ -64,50 +64,50 @@
                     android:textSize="16sp"
                     android:textColor="@color/success" />
 
-    <!-- File Management Area -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="File Management"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/onSurface"
+                        android:layout_marginBottom="16dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/folderRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@color/surfaceVariant"
+                        android:layout_marginBottom="16dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/backupButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Backup & Share"
+                        android:icon="@android:drawable/ic_menu_save"
+                        android:backgroundTint="@color/primary"
+                        android:textColor="@color/onPrimary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,48 +130,6 @@
                     android:textSize="16sp"
                     android:textColor="@color/success" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <LinearLayout
@@ -194,94 +152,9 @@
                     android:textSize="16sp"
                     android:textColor="@color/info" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -315,92 +188,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/onSurfaceVariant" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/outline">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="File Management"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/onSurface"
-                android:layout_marginBottom="16dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/folderRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Backup Backup &amp; Shareamp; Share"
-                android:icon="@android:drawable/ic_menu_save"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
