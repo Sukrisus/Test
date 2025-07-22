@@ -101,9 +101,8 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
@@ -131,7 +130,6 @@
                     android:textSize="16sp"
                     android:textColor="@color/success" />
 
-    <!-- File Management Area -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -168,9 +166,8 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
@@ -197,7 +194,6 @@
                     android:textSize="16sp"
                     android:textColor="@color/info" />
 
-    <!-- File Management Area -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -234,16 +230,14 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-    <!-- File Management Area -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -280,9 +274,8 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
@@ -322,7 +315,6 @@
                 android:textSize="16sp"
                 android:textColor="@color/onSurfaceVariant" />
 
-    <!-- File Management Area -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -359,9 +351,8 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
@@ -370,7 +361,6 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- File Management Area -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -407,9 +397,8 @@
                 android:id="@+id/backupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup & Share"
+                android:text="Backup Backup &amp; Shareamp; Share"
                 android:icon="@android:drawable/ic_menu_save"
-                android:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/onPrimary" />
         </LinearLayout>
