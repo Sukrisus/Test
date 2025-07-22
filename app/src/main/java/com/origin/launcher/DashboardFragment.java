@@ -81,28 +81,34 @@ public class DashboardFragment extends Fragment {
     }
 
     private void requestStoragePermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Android 11+ (API 30+) - Request MANAGE_EXTERNAL_STORAGE
-            Toast.makeText(requireContext(), "Please grant 'All files access' permission to backup files", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-            intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
-            startActivity(intent);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13+ (API 33+) - Request media permissions
-            String[] permissions = {
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            };
-            requestPermissions(permissions, 1001);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Android 6+ to Android 12 - Request READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE
-            String[] permissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            };
-            requestPermissions(permissions, 1001);
+        // Use MainActivity's permission request method to ensure consistency
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).requestStoragePermissions();
+        } else {
+            // Fallback to local permission request
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+) - Request MANAGE_EXTERNAL_STORAGE
+                Toast.makeText(requireContext(), "Please grant 'All files access' permission to backup files", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(intent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Android 13+ (API 33+) - Request media permissions
+                String[] permissions = {
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                };
+                requestPermissions(permissions, 1001);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Android 6+ to Android 12 - Request READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE
+                String[] permissions = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                };
+                requestPermissions(permissions, 1001);
+            }
         }
     }
 

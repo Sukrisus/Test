@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        // Request storage permissions immediately on startup
-        requestStoragePermissions();
+        // Delay permission requests to avoid interfering with launcher
+        // Only request permissions when actually needed (in DashboardFragment)
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void requestStoragePermissions() {
+    public void requestStoragePermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android 11+ (API 30+) - Request MANAGE_EXTERNAL_STORAGE
             if (!Environment.isExternalStorageManager()) {
