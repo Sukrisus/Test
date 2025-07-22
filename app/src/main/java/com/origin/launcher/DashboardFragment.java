@@ -29,38 +29,72 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class DashboardFragment extends Fragment {
+    private File currentRootDir = null; // Store the found root directory
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         RecyclerView folderRecyclerView = view.findViewById(R.id.folderRecyclerView);
         MaterialButton backupButton = view.findViewById(R.id.backupButton);
-        folderRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        
+        if (folderRecyclerView != null) {
+            folderRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // File management root
-        String rootPath = "/storage/emulated/0/Android/data/com.origin.launcher/files/games/com.mojang/";
-        File rootDir = new File(rootPath);
-        List<String> folderNames = new ArrayList<>();
-        if (rootDir.exists() && rootDir.isDirectory()) {
-            File[] files = rootDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        folderNames.add(file.getName());
+            // File management root - try multiple possible paths
+            String[] possiblePaths = {
+                "/storage/emulated/0/Android/data/com.origin.launcher/files/games/com.mojang/",
+                "/storage/emulated/0/games/com.mojang/",
+                "/storage/emulated/0/Android/data/com.mojang.minecraftpe/files/games/com.mojang/",
+                getContext().getExternalFilesDir(null) + "/games/com.mojang/"
+            };
+            
+            File rootDir = null;
+            String rootPath = null;
+            
+            for (String path : possiblePaths) {
+                File testDir = new File(path);
+                if (testDir.exists() && testDir.isDirectory()) {
+                    File[] testFiles = testDir.listFiles();
+                    if (testFiles != null && testFiles.length > 0) {
+                        rootDir = testDir;
+                        rootPath = path;
+                        currentRootDir = testDir; // Store for later use
+                        break;
                     }
                 }
             }
-        }
-        FolderAdapter adapter = new FolderAdapter(folderNames);
-        folderRecyclerView.setAdapter(adapter);
-
-        backupButton.setOnClickListener(v -> {
-            if (hasStoragePermission()) {
-                backupAndShare(rootDir);
+            
+            List<String> folderNames = new ArrayList<>();
+            if (rootDir != null && rootDir.exists() && rootDir.isDirectory()) {
+                File[] files = rootDir.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isDirectory()) {
+                            folderNames.add(file.getName());
+                        }
+                    }
+                }
             } else {
-                requestStoragePermissions();
+                folderNames.add("No Minecraft data found");
             }
-        });
+            FolderAdapter adapter = new FolderAdapter(folderNames);
+            folderRecyclerView.setAdapter(adapter);
+        }
+
+        if (backupButton != null) {
+            backupButton.setOnClickListener(v -> {
+                if (hasStoragePermission()) {
+                    if (currentRootDir != null) {
+                        backupAndShare(currentRootDir);
+                    } else {
+                        Toast.makeText(requireContext(), "No Minecraft data found to backup", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    requestStoragePermissions();
+                }
+            });
+        }
 
         return view;
     }
@@ -75,40 +109,35 @@ public class DashboardFragment extends Fragment {
                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android 6+ to Android 12
-            return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                   ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
         return true; // Below Android 6, permissions are granted at install time
     }
 
     private void requestStoragePermissions() {
-        // Use MainActivity's permission request method to ensure consistency
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).requestStoragePermissions();
-        } else {
-            // Fallback to local permission request
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Android 11+ (API 30+) - Request MANAGE_EXTERNAL_STORAGE
-                Toast.makeText(requireContext(), "Please grant 'All files access' permission to backup files", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
-                startActivity(intent);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Android 13+ (API 33+) - Request media permissions
-                String[] permissions = {
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_AUDIO,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                };
-                requestPermissions(permissions, 1001);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // Android 6+ to Android 12 - Request READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE
-                String[] permissions = {
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                };
-                requestPermissions(permissions, 1001);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11+ (API 30+) - Request MANAGE_EXTERNAL_STORAGE
+            Toast.makeText(requireContext(), "Please grant 'All files access' permission to backup files", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+            startActivity(intent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ (API 33+) - Request media permissions
+            String[] permissions = {
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            };
+            requestPermissions(permissions, 1001);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android 6+ to Android 12 - Request READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE
+            String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            requestPermissions(permissions, 1001);
         }
     }
 
@@ -172,7 +201,17 @@ public class DashboardFragment extends Fragment {
             }
             return;
         }
+        
+        // Skip files that can't be read
+        if (!fileToZip.canRead()) {
+            return;
+        }
+        
         String zipEntryName = fileToZip.getAbsolutePath().replace(basePath, "").replaceFirst("^/", "");
+        if (zipEntryName.isEmpty()) {
+            zipEntryName = fileToZip.getName();
+        }
+        
         try (FileInputStream fis = new FileInputStream(fileToZip)) {
             ZipEntry zipEntry = new ZipEntry(zipEntryName);
             zos.putNextEntry(zipEntry);
@@ -181,6 +220,10 @@ public class DashboardFragment extends Fragment {
             while ((length = fis.read(bytes)) >= 0) {
                 zos.write(bytes, 0, length);
             }
+            zos.closeEntry();
+        } catch (IOException e) {
+            // Skip files that can't be read, but continue with others
+            System.err.println("Skipping file due to error: " + fileToZip.getAbsolutePath() + " - " + e.getMessage());
         }
     }
 
@@ -197,9 +240,11 @@ public class DashboardFragment extends Fragment {
             }
             
             if (granted) {
-                String rootPath = "/storage/emulated/0/Android/data/com.origin.launcher/files/games/com.mojang/";
-                File rootDir = new File(rootPath);
-                backupAndShare(rootDir);
+                if (currentRootDir != null) {
+                    backupAndShare(currentRootDir);
+                } else {
+                    Toast.makeText(requireContext(), "No Minecraft data found to backup", Toast.LENGTH_LONG).show();
+                }
             } else {
                 Toast.makeText(requireContext(), "Storage permission is required to backup files", Toast.LENGTH_LONG).show();
             }
