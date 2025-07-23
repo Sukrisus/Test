@@ -13,9 +13,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,6 +61,7 @@ public class DashboardFragment extends Fragment {
     private LinearLayout optionsEditorLayout;
     private TextInputLayout searchInputLayout;
     private TextInputEditText searchEditText;
+    private MaterialButton editOptionsButton;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -290,7 +293,7 @@ public class DashboardFragment extends Fragment {
         optionsFile = new File("/storage/emulated/0/Android/data/com.origin.launcher/files/games/com.mojang/minecraftpe/options.txt");
         
         // Get UI elements
-        MaterialButton editOptionsButton = view.findViewById(R.id.editOptionsButton);
+        editOptionsButton = view.findViewById(R.id.editOptionsButton);
         TextView optionsNotFoundText = view.findViewById(R.id.optionsNotFoundText);
         optionsEditorLayout = view.findViewById(R.id.optionsEditorLayout);
         optionsTextEditor = view.findViewById(R.id.optionsTextEditor);
@@ -355,6 +358,19 @@ public class DashboardFragment extends Fragment {
                 @Override
                 public void afterTextChanged(Editable s) {}
             });
+            
+            // Handle Enter key in search
+            searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || 
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    String searchTerm = searchEditText.getText().toString();
+                    if (!searchTerm.isEmpty()) {
+                        findNextMatch(searchTerm);
+                    }
+                    return true;
+                }
+                return false;
+            });
         }
         
         // Set up text change listener for undo/redo
@@ -398,8 +414,10 @@ public class DashboardFragment extends Fragment {
             redoStack.clear();
             undoStack.push(originalOptionsContent);
             
-            // Show editor
+            // Show editor and disable edit button
             optionsEditorLayout.setVisibility(View.VISIBLE);
+            editOptionsButton.setEnabled(false);
+            editOptionsButton.setText("Editor Open");
             
             Toast.makeText(requireContext(), "Options.txt loaded successfully", Toast.LENGTH_SHORT).show();
             
@@ -488,11 +506,37 @@ public class DashboardFragment extends Fragment {
         optionsEditorLayout.setVisibility(View.GONE);
         searchInputLayout.setVisibility(View.GONE);
         
+        // Re-enable edit button
+        editOptionsButton.setEnabled(true);
+        editOptionsButton.setText("Edit options.txt");
+        
         // Clear undo/redo stacks
         undoStack.clear();
         redoStack.clear();
         
         Toast.makeText(requireContext(), "Editor closed", Toast.LENGTH_SHORT).show();
+    }
+
+    private void findNextMatch(String searchTerm) {
+        String text = optionsTextEditor.getText().toString();
+        String lowerText = text.toLowerCase();
+        String lowerSearchTerm = searchTerm.toLowerCase();
+        
+        int currentSelection = optionsTextEditor.getSelectionStart();
+        int nextIndex = lowerText.indexOf(lowerSearchTerm, currentSelection + 1);
+        
+        if (nextIndex == -1) {
+            // Search from beginning if not found after current position
+            nextIndex = lowerText.indexOf(lowerSearchTerm);
+        }
+        
+        if (nextIndex != -1) {
+            optionsTextEditor.setSelection(nextIndex, nextIndex + searchTerm.length());
+            optionsTextEditor.requestFocus();
+            Toast.makeText(requireContext(), "Found match", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(requireContext(), "No matches found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean hasStoragePermission() {

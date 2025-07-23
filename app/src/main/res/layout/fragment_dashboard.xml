@@ -260,47 +260,47 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/saveOptionsButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:text="Save"
                             android:icon="@android:drawable/ic_menu_save"
                             android:backgroundTint="@color/primary"
                             android:textColor="@color/onPrimary"
+                            android:contentDescription="Save"
                             style="@style/Widget.Material3.Button" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/undoOptionsButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:text="Undo"
                             android:icon="@android:drawable/ic_menu_revert"
+                            android:contentDescription="Undo"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/redoOptionsButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="4dp"
-                            android:text="Redo"
                             android:icon="@android:drawable/ic_menu_rotate"
+                            android:contentDescription="Redo"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/searchOptionsButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="4dp"
-                            android:text="Search"
                             android:icon="@android:drawable/ic_menu_search"
+                            android:contentDescription="Search"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
 
@@ -320,7 +320,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Search in options.txt..."
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:imeOptions="actionSearch" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -329,12 +330,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
                         android:background="@color/surfaceVariant"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:fillViewport="true"
+                        android:scrollbars="vertical">
 
                         <EditText
                             android:id="@+id/optionsTextEditor"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="400dp"
                             android:background="@android:color/transparent"
                             android:textColor="@color/onSurface"
                             android:textSize="12sp"
@@ -342,7 +346,9 @@
                             android:inputType="textMultiLine|textNoSuggestions"
                             android:gravity="top|start"
                             android:padding="8dp"
-                            android:hint="Loading options.txt..." />
+                            android:hint="Loading options.txt..."
+                            android:scrollbars="vertical"
+                            android:overScrollMode="always" />
 
                     </ScrollView>
 
