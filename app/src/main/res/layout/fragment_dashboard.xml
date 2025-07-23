@@ -186,6 +186,184 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Options.txt Editor Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/surface"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/outline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Options.txt Editor"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/onSurface"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Options.txt Status/Button Area -->
+                <LinearLayout
+                    android:id="@+id/optionsStatusLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editOptionsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edit options.txt"
+                        android:icon="@android:drawable/ic_menu_edit"
+                        android:backgroundTint="@color/primary"
+                        android:textColor="@color/onPrimary"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/optionsNotFoundText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="options.txt not found, perhaps ur game storage isn't external"
+                        android:textSize="14sp"
+                        android:textColor="@color/error"
+                        android:gravity="center"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <!-- Expanded Editor Area -->
+                <LinearLayout
+                    android:id="@+id/optionsEditorLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- Editor Controls -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/saveOptionsButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="Save"
+                            android:icon="@android:drawable/ic_menu_save"
+                            android:backgroundTint="@color/primary"
+                            android:textColor="@color/onPrimary"
+                            style="@style/Widget.Material3.Button" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/undoOptionsButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:text="Undo"
+                            android:icon="@android:drawable/ic_menu_revert"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="@color/primary" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/redoOptionsButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="Redo"
+                            android:icon="@android:drawable/ic_menu_rotate"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="@color/primary" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/searchOptionsButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="Search"
+                            android:icon="@android:drawable/ic_menu_search"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="@color/primary" />
+
+                    </LinearLayout>
+
+                    <!-- Search Bar (initially hidden) -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/searchInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/searchEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Search in options.txt..."
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Text Editor in ScrollView -->
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        android:background="@color/surfaceVariant"
+                        android:padding="8dp">
+
+                        <EditText
+                            android:id="@+id/optionsTextEditor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:textColor="@color/onSurface"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace"
+                            android:inputType="textMultiLine|textNoSuggestions"
+                            android:gravity="top|start"
+                            android:padding="8dp"
+                            android:hint="Loading options.txt..." />
+
+                    </ScrollView>
+
+                    <!-- Close Editor Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/closeEditorButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:text="Close Editor"
+                        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:textColor="@color/primary" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

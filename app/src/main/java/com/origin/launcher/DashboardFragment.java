@@ -8,9 +8,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,13 +28,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -35,6 +49,16 @@ public class DashboardFragment extends Fragment {
     private File currentRootDir = null; // Store the found root directory
     private static final int IMPORT_REQUEST_CODE = 1002;
     private static final int EXPORT_REQUEST_CODE = 1003;
+    
+    // Options.txt editor variables
+    private File optionsFile;
+    private String originalOptionsContent = "";
+    private Stack<String> undoStack = new Stack<>();
+    private Stack<String> redoStack = new Stack<>();
+    private EditText optionsTextEditor;
+    private LinearLayout optionsEditorLayout;
+    private TextInputLayout searchInputLayout;
+    private TextInputEditText searchEditText;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,6 +135,9 @@ public class DashboardFragment extends Fragment {
                 }
             });
         }
+
+        // Initialize options.txt editor
+        initializeOptionsEditor(view);
 
         return view;
     }
@@ -256,6 +283,216 @@ public class DashboardFragment extends Fragment {
             FolderAdapter adapter = new FolderAdapter(folderNames);
             folderRecyclerView.setAdapter(adapter);
         }
+    }
+
+    private void initializeOptionsEditor(View view) {
+        // Initialize options.txt file path
+        optionsFile = new File("/storage/emulated/0/Android/data/com.origin.launcher/files/games/com.mojang/minecraftpe/options.txt");
+        
+        // Get UI elements
+        MaterialButton editOptionsButton = view.findViewById(R.id.editOptionsButton);
+        TextView optionsNotFoundText = view.findViewById(R.id.optionsNotFoundText);
+        optionsEditorLayout = view.findViewById(R.id.optionsEditorLayout);
+        optionsTextEditor = view.findViewById(R.id.optionsTextEditor);
+        searchInputLayout = view.findViewById(R.id.searchInputLayout);
+        searchEditText = view.findViewById(R.id.searchEditText);
+        
+        MaterialButton saveOptionsButton = view.findViewById(R.id.saveOptionsButton);
+        MaterialButton undoOptionsButton = view.findViewById(R.id.undoOptionsButton);
+        MaterialButton redoOptionsButton = view.findViewById(R.id.redoOptionsButton);
+        MaterialButton searchOptionsButton = view.findViewById(R.id.searchOptionsButton);
+        MaterialButton closeEditorButton = view.findViewById(R.id.closeEditorButton);
+        
+        // Check if options.txt exists
+        if (optionsFile.exists()) {
+            editOptionsButton.setVisibility(View.VISIBLE);
+            optionsNotFoundText.setVisibility(View.GONE);
+            
+            editOptionsButton.setOnClickListener(v -> {
+                if (hasStoragePermission()) {
+                    openOptionsEditor();
+                } else {
+                    requestStoragePermissions();
+                }
+            });
+        } else {
+            editOptionsButton.setVisibility(View.GONE);
+            optionsNotFoundText.setVisibility(View.VISIBLE);
+        }
+        
+        // Set up editor buttons
+        if (saveOptionsButton != null) {
+            saveOptionsButton.setOnClickListener(v -> saveOptionsFile());
+        }
+        
+        if (undoOptionsButton != null) {
+            undoOptionsButton.setOnClickListener(v -> undoChanges());
+        }
+        
+        if (redoOptionsButton != null) {
+            redoOptionsButton.setOnClickListener(v -> redoChanges());
+        }
+        
+        if (searchOptionsButton != null) {
+            searchOptionsButton.setOnClickListener(v -> toggleSearch());
+        }
+        
+        if (closeEditorButton != null) {
+            closeEditorButton.setOnClickListener(v -> closeOptionsEditor());
+        }
+        
+        // Set up search functionality
+        if (searchEditText != null) {
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchInText(s.toString());
+                }
+                
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+        }
+        
+        // Set up text change listener for undo/redo
+        if (optionsTextEditor != null) {
+            optionsTextEditor.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // Add to undo stack when text changes
+                    String currentText = s.toString();
+                    if (!currentText.equals(originalOptionsContent) && !undoStack.isEmpty() && !currentText.equals(undoStack.peek())) {
+                        undoStack.push(currentText);
+                        redoStack.clear(); // Clear redo stack when new changes are made
+                    }
+                }
+            });
+        }
+    }
+
+    private void openOptionsEditor() {
+        try {
+            // Read the options.txt file
+            StringBuilder content = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(optionsFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
+            }
+            
+            originalOptionsContent = content.toString();
+            optionsTextEditor.setText(originalOptionsContent);
+            
+            // Initialize undo stack
+            undoStack.clear();
+            redoStack.clear();
+            undoStack.push(originalOptionsContent);
+            
+            // Show editor
+            optionsEditorLayout.setVisibility(View.VISIBLE);
+            
+            Toast.makeText(requireContext(), "Options.txt loaded successfully", Toast.LENGTH_SHORT).show();
+            
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), "Failed to load options.txt: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void saveOptionsFile() {
+        try {
+            String content = optionsTextEditor.getText().toString();
+            try (FileWriter writer = new FileWriter(optionsFile)) {
+                writer.write(content);
+            }
+            
+            originalOptionsContent = content;
+            Toast.makeText(requireContext(), "Options.txt saved successfully", Toast.LENGTH_SHORT).show();
+            
+        } catch (IOException e) {
+            Toast.makeText(requireContext(), "Failed to save options.txt: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void undoChanges() {
+        if (undoStack.size() > 1) {
+            String currentText = optionsTextEditor.getText().toString();
+            redoStack.push(currentText);
+            undoStack.pop(); // Remove current state
+            String previousText = undoStack.peek();
+            optionsTextEditor.setText(previousText);
+            optionsTextEditor.setSelection(previousText.length()); // Move cursor to end
+        } else {
+            Toast.makeText(requireContext(), "Nothing to undo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void redoChanges() {
+        if (!redoStack.isEmpty()) {
+            String redoText = redoStack.pop();
+            undoStack.push(redoText);
+            optionsTextEditor.setText(redoText);
+            optionsTextEditor.setSelection(redoText.length()); // Move cursor to end
+        } else {
+            Toast.makeText(requireContext(), "Nothing to redo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void toggleSearch() {
+        if (searchInputLayout.getVisibility() == View.GONE) {
+            searchInputLayout.setVisibility(View.VISIBLE);
+            searchEditText.requestFocus();
+        } else {
+            searchInputLayout.setVisibility(View.GONE);
+            // Clear search highlighting
+            optionsTextEditor.setText(optionsTextEditor.getText().toString());
+        }
+    }
+
+    private void searchInText(String searchTerm) {
+        if (searchTerm.isEmpty()) {
+            // Clear highlighting
+            optionsTextEditor.setText(optionsTextEditor.getText().toString());
+            return;
+        }
+        
+        String text = optionsTextEditor.getText().toString();
+        SpannableString spannable = new SpannableString(text);
+        
+        int index = text.toLowerCase().indexOf(searchTerm.toLowerCase());
+        while (index >= 0) {
+            spannable.setSpan(
+                new BackgroundColorSpan(0xFFFFFF00), // Yellow highlight color
+                index,
+                index + searchTerm.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+            index = text.toLowerCase().indexOf(searchTerm.toLowerCase(), index + 1);
+        }
+        
+        optionsTextEditor.setText(spannable);
+    }
+
+    private void closeOptionsEditor() {
+        optionsEditorLayout.setVisibility(View.GONE);
+        searchInputLayout.setVisibility(View.GONE);
+        
+        // Clear undo/redo stacks
+        undoStack.clear();
+        redoStack.clear();
+        
+        Toast.makeText(requireContext(), "Editor closed", Toast.LENGTH_SHORT).show();
     }
 
     private boolean hasStoragePermission() {
