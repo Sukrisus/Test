@@ -392,6 +392,13 @@ public class DashboardFragment extends Fragment {
                     }
                 }
             });
+            
+            // Handle touch events to ensure proper focus
+            optionsTextEditor.setOnTouchListener((v, event) -> {
+                v.requestFocus();
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            });
         }
     }
 
@@ -445,12 +452,16 @@ public class DashboardFragment extends Fragment {
 
     private void undoChanges() {
         if (undoStack.size() > 1) {
+            int currentCursorPosition = optionsTextEditor.getSelectionStart();
             String currentText = optionsTextEditor.getText().toString();
             redoStack.push(currentText);
             undoStack.pop(); // Remove current state
             String previousText = undoStack.peek();
             optionsTextEditor.setText(previousText);
-            optionsTextEditor.setSelection(previousText.length()); // Move cursor to end
+            
+            // Maintain cursor position or set to safe position
+            int safePosition = Math.min(currentCursorPosition, previousText.length());
+            optionsTextEditor.setSelection(safePosition);
         } else {
             Toast.makeText(requireContext(), "Nothing to undo", Toast.LENGTH_SHORT).show();
         }
@@ -458,10 +469,14 @@ public class DashboardFragment extends Fragment {
 
     private void redoChanges() {
         if (!redoStack.isEmpty()) {
+            int currentCursorPosition = optionsTextEditor.getSelectionStart();
             String redoText = redoStack.pop();
             undoStack.push(redoText);
             optionsTextEditor.setText(redoText);
-            optionsTextEditor.setSelection(redoText.length()); // Move cursor to end
+            
+            // Maintain cursor position or set to safe position
+            int safePosition = Math.min(currentCursorPosition, redoText.length());
+            optionsTextEditor.setSelection(safePosition);
         } else {
             Toast.makeText(requireContext(), "Nothing to redo", Toast.LENGTH_SHORT).show();
         }
@@ -531,11 +546,37 @@ public class DashboardFragment extends Fragment {
         }
         
         if (nextIndex != -1) {
+            // Select the found text
             optionsTextEditor.setSelection(nextIndex, nextIndex + searchTerm.length());
             optionsTextEditor.requestFocus();
+            
+            // Scroll to make the selection visible
+            scrollToPosition(nextIndex);
+            
             Toast.makeText(requireContext(), "Found match", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(requireContext(), "No matches found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void scrollToPosition(int position) {
+        // Get the layout of the EditText
+        android.text.Layout layout = optionsTextEditor.getLayout();
+        if (layout != null) {
+            // Get the line number for the position
+            int line = layout.getLineForOffset(position);
+            
+            // Get the Y coordinate of the line
+            int lineTop = layout.getLineTop(line);
+            int lineBottom = layout.getLineBottom(line);
+            int lineHeight = lineBottom - lineTop;
+            
+            // Calculate scroll position to center the line in view
+            int editorHeight = optionsTextEditor.getHeight();
+            int scrollY = Math.max(0, lineTop - (editorHeight / 2) + (lineHeight / 2));
+            
+            // Scroll to the calculated position
+            optionsTextEditor.scrollTo(0, scrollY);
         }
     }
 

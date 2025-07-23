@@ -263,7 +263,8 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:icon="@android:drawable/ic_menu_save"
+                            android:text="💾"
+                            android:textSize="18sp"
                             android:backgroundTint="@color/primary"
                             android:textColor="@color/onPrimary"
                             android:contentDescription="Save"
@@ -276,7 +277,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:icon="@android:drawable/ic_menu_revert"
+                            android:text="↶"
+                            android:textSize="18sp"
                             android:contentDescription="Undo"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
@@ -288,7 +290,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="4dp"
-                            android:icon="@android:drawable/ic_menu_rotate"
+                            android:text="↷"
+                            android:textSize="18sp"
                             android:contentDescription="Redo"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
@@ -299,7 +302,8 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="4dp"
-                            android:icon="@android:drawable/ic_menu_search"
+                            android:text="🔍"
+                            android:textSize="18sp"
                             android:contentDescription="Search"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:textColor="@color/primary" />
@@ -325,20 +329,17 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Text Editor in ScrollView -->
-                    <ScrollView
+                    <!-- Text Editor with proper scrolling -->
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
                         android:background="@color/surfaceVariant"
-                        android:padding="8dp"
-                        android:fillViewport="true"
-                        android:scrollbars="vertical">
+                        android:padding="8dp">
 
                         <EditText
                             android:id="@+id/optionsTextEditor"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="400dp"
+                            android:layout_height="match_parent"
                             android:background="@android:color/transparent"
                             android:textColor="@color/onSurface"
                             android:textSize="12sp"
@@ -348,9 +349,11 @@
                             android:padding="8dp"
                             android:hint="Loading options.txt..."
                             android:scrollbars="vertical"
-                            android:overScrollMode="always" />
+                            android:overScrollMode="always"
+                            android:scrollHorizontally="false"
+                            android:isScrollContainer="true" />
 
-                    </ScrollView>
+                    </FrameLayout>
 
                     <!-- Close Editor Button -->
                     <com.google.android.material.button.MaterialButton
