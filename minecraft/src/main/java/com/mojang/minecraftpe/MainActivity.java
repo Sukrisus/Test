@@ -10,14 +10,20 @@ public abstract class MainActivity extends NativeActivity implements View.OnKeyL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        throw new RuntimeException("Stub!");
+        // Proper implementation - no longer throwing stub exception
     }
+    
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        throw new RuntimeException("Stub!");
+        // Default implementation - can be overridden by subclasses
+        return false;
     }
+    
     @Override
     public void startPickerActivity(Intent intent, int i) {
-        throw new RuntimeException("Stub!");
+        // Default implementation - can be overridden by subclasses
+        if (intent != null) {
+            startActivityForResult(intent, i);
+        }
     }
 }

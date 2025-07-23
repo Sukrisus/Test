@@ -19,7 +19,7 @@ public class IntentHandler extends Activity
 		if (isMcLoaded()) {
 			intention.setClassName(getApplicationContext(), "com.mojang.minecraftpe.Launcher");
 		} else {
-			intention.setClassName(getApplicationContext(), "io.bambosan.mbloader.MainActivity");
+			intention.setClassName(getApplicationContext(), "com.origin.launcher.MainActivity");
 		}
 		startActivity(intention);
 	}
