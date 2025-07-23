@@ -119,7 +119,7 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- File Management Card - Separate from Quick Stats -->
+    <!-- File Management Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -164,7 +164,6 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Recent Activity Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
