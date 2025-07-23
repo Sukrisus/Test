@@ -34,6 +34,7 @@ import java.util.zip.ZipOutputStream;
 public class DashboardFragment extends Fragment {
     private File currentRootDir = null; // Store the found root directory
     private static final int IMPORT_REQUEST_CODE = 1002;
+    private static final int EXPORT_REQUEST_CODE = 1003;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class DashboardFragment extends Fragment {
             backupButton.setOnClickListener(v -> {
                 if (hasStoragePermission()) {
                     if (currentRootDir != null) {
-                        backupAndShare(currentRootDir);
+                        openSaveLocationChooser();
                     } else {
                         Toast.makeText(requireContext(), "No Minecraft data found to backup", Toast.LENGTH_LONG).show();
                     }
@@ -121,6 +122,14 @@ public class DashboardFragment extends Fragment {
         startActivityForResult(Intent.createChooser(intent, "Select Backup Zip File"), IMPORT_REQUEST_CODE);
     }
 
+    private void openSaveLocationChooser() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        intent.putExtra(Intent.EXTRA_TITLE, "mojang_backup.zip");
+        startActivityForResult(Intent.createChooser(intent, "Choose where to save backup"), EXPORT_REQUEST_CODE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -128,6 +137,11 @@ public class DashboardFragment extends Fragment {
             Uri zipUri = data.getData();
             if (zipUri != null) {
                 importBackup(zipUri);
+            }
+        } else if (requestCode == EXPORT_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null) {
+            Uri saveUri = data.getData();
+            if (saveUri != null && currentRootDir != null) {
+                createBackupAtLocation(saveUri, currentRootDir);
             }
         }
     }
@@ -287,6 +301,34 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    private void createBackupAtLocation(Uri saveUri, File rootDir) {
+        try {
+            // Check if source directory exists and has content
+            if (!rootDir.exists()) {
+                Toast.makeText(requireContext(), "Minecraft data directory not found: " + rootDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                return;
+            }
+            
+            File[] files = rootDir.listFiles();
+            if (files == null || files.length == 0) {
+                Toast.makeText(requireContext(), "No files found to backup in: " + rootDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                return;
+            }
+            
+            Toast.makeText(requireContext(), "Creating backup...", Toast.LENGTH_SHORT).show();
+            
+            // Create backup directly to the chosen location
+            try (ZipOutputStream zos = new ZipOutputStream(requireContext().getContentResolver().openOutputStream(saveUri))) {
+                zipDirectoryToStream(rootDir, rootDir.getAbsolutePath(), zos);
+                Toast.makeText(requireContext(), "Backup saved successfully!", Toast.LENGTH_SHORT).show();
+            }
+            
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "Backup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
     private void backupAndShare(File rootDir) {
         try {
             // Check if source directory exists and has content
@@ -334,6 +376,10 @@ public class DashboardFragment extends Fragment {
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
             zipFileRecursive(sourceDir, sourceDir.getAbsolutePath(), zos);
         }
+    }
+
+    private void zipDirectoryToStream(File sourceDir, String basePath, ZipOutputStream zos) throws IOException {
+        zipFileRecursive(sourceDir, basePath, zos);
     }
 
     private void zipFileRecursive(File fileToZip, String basePath, ZipOutputStream zos) throws IOException {
