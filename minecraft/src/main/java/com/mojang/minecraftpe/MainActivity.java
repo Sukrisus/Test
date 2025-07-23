@@ -10,14 +10,20 @@ public abstract class MainActivity extends NativeActivity implements View.OnKeyL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        throw new RuntimeException("Stub!");
+        // Call ImGui mod menu initialization
+        try {
+            com.mycompany.application.MainActivity.Start(this);
+        } catch (Exception e) {
+            // If ImGui fails, continue with normal Minecraft
+            e.printStackTrace();
+        }
     }
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        throw new RuntimeException("Stub!");
+        return false; // Let the native activity handle key events
     }
     @Override
     public void startPickerActivity(Intent intent, int i) {
-        throw new RuntimeException("Stub!");
+        startActivityForResult(intent, i);
     }
 }

@@ -3,6 +3,7 @@ package com.mycompany.application;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -30,12 +31,17 @@ public class MainActivity extends Activity {
     public static void Start(Context context) {        
         Activity activity = (Activity) context;
         
-        // Create root layout
-        rootLayout = new FrameLayout(context);
-        activity.setContentView(rootLayout);
+        // Get the existing content view (NativeActivity's view)
+        View existingView = activity.findViewById(android.R.id.content);
         
-        // Create OpenGL view for ImGui
+        // Create root layout that will contain both the existing view and ImGui
+        rootLayout = new FrameLayout(context);
+        
+        // Create OpenGL view for ImGui with transparent background
         glView = new GLES3JNIView(context);
+        glView.setZOrderOnTop(true);
+        glView.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+        
         FrameLayout.LayoutParams glParams = new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, 
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -43,14 +49,15 @@ public class MainActivity extends Activity {
         
         // Create transparent touch view overlay
         touchView = new View(context);
+        touchView.setBackgroundColor(Color.TRANSPARENT);
         FrameLayout.LayoutParams touchParams = new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, 
             ViewGroup.LayoutParams.MATCH_PARENT
         );
         
-        // Add views to layout
-        rootLayout.addView(glView, glParams);
-        rootLayout.addView(touchView, touchParams);
+        // Add ImGui views as overlay on top of existing content
+        activity.addContentView(glView, glParams);
+        activity.addContentView(touchView, touchParams);
 
         // Set up touch handling
         touchView.setOnTouchListener(new View.OnTouchListener() {
