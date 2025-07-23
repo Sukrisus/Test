@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation project(':minecraft')
     implementation libs.appcompat
     implementation libs.constraintlayout
     implementation 'com.google.android.material:material:1.12.0'
