@@ -263,9 +263,11 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:icon="@android:drawable/ic_menu_save"
-                            android:iconTint="@color/onPrimary"
+                            android:text="SAVE"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
                             android:backgroundTint="@color/primary"
+                            android:textColor="@color/onPrimary"
                             android:contentDescription="Save"
                             style="@style/Widget.Material3.Button" />
 
@@ -276,8 +278,10 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:icon="@android:drawable/ic_menu_revert"
-                            android:iconTint="@color/primary"
+                            android:text="UNDO"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
                             android:contentDescription="Undo"
                             style="@style/Widget.Material3.Button.OutlinedButton" />
 
@@ -288,8 +292,10 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="4dp"
-                            android:icon="@android:drawable/ic_menu_rotate"
-                            android:iconTint="@color/primary"
+                            android:text="REDO"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
                             android:contentDescription="Redo"
                             style="@style/Widget.Material3.Button.OutlinedButton" />
 
@@ -299,8 +305,10 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="4dp"
-                            android:icon="@android:drawable/ic_menu_search"
-                            android:iconTint="@color/primary"
+                            android:text="FIND"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
                             android:contentDescription="Search"
                             style="@style/Widget.Material3.Button.OutlinedButton" />
 
