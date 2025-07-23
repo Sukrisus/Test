@@ -263,10 +263,9 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:text="💾"
-                            android:textSize="18sp"
+                            android:icon="@android:drawable/ic_menu_save"
+                            android:iconTint="@color/onPrimary"
                             android:backgroundTint="@color/primary"
-                            android:textColor="@color/onPrimary"
                             android:contentDescription="Save"
                             style="@style/Widget.Material3.Button" />
 
@@ -277,11 +276,10 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:text="↶"
-                            android:textSize="18sp"
+                            android:icon="@android:drawable/ic_menu_revert"
+                            android:iconTint="@color/primary"
                             android:contentDescription="Undo"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:textColor="@color/primary" />
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/redoOptionsButton"
@@ -290,11 +288,10 @@
                             android:layout_weight="1"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="4dp"
-                            android:text="↷"
-                            android:textSize="18sp"
+                            android:icon="@android:drawable/ic_menu_rotate"
+                            android:iconTint="@color/primary"
                             android:contentDescription="Redo"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:textColor="@color/primary" />
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/searchOptionsButton"
@@ -302,11 +299,10 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:layout_marginStart="4dp"
-                            android:text="🔍"
-                            android:textSize="18sp"
+                            android:icon="@android:drawable/ic_menu_search"
+                            android:iconTint="@color/primary"
                             android:contentDescription="Search"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:textColor="@color/primary" />
+                            style="@style/Widget.Material3.Button.OutlinedButton" />
 
                     </LinearLayout>
 

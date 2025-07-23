@@ -63,6 +63,11 @@ public class DashboardFragment extends Fragment {
     private TextInputEditText searchEditText;
     private MaterialButton editOptionsButton;
     
+    // Search functionality variables
+    private String currentSearchTerm = "";
+    private List<Integer> searchMatches = new ArrayList<>();
+    private int currentMatchIndex = -1;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
@@ -337,7 +342,17 @@ public class DashboardFragment extends Fragment {
         }
         
         if (searchOptionsButton != null) {
-            searchOptionsButton.setOnClickListener(v -> toggleSearch());
+            searchOptionsButton.setOnClickListener(v -> {
+                if (searchInputLayout.getVisibility() == View.GONE) {
+                    toggleSearch();
+                } else {
+                    // If search is already open, cycle through matches
+                    String searchTerm = searchEditText.getText().toString().trim();
+                    if (!searchTerm.isEmpty()) {
+                        findNextMatch(searchTerm);
+                    }
+                }
+            });
         }
         
         if (closeEditorButton != null) {
@@ -352,7 +367,13 @@ public class DashboardFragment extends Fragment {
                 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchInText(s.toString());
+                    String searchTerm = s.toString().trim();
+                    if (!searchTerm.isEmpty()) {
+                        searchInText(searchTerm);
+                    } else {
+                        // Clear search results when search term is empty
+                        clearSearchResults();
+                    }
                 }
                 
                 @Override
@@ -363,7 +384,7 @@ public class DashboardFragment extends Fragment {
             searchEditText.setOnEditorActionListener((v, actionId, event) -> {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || 
                     (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    String searchTerm = searchEditText.getText().toString();
+                    String searchTerm = searchEditText.getText().toString().trim();
                     if (!searchTerm.isEmpty()) {
                         findNextMatch(searchTerm);
                     }
@@ -488,33 +509,60 @@ public class DashboardFragment extends Fragment {
             searchEditText.requestFocus();
         } else {
             searchInputLayout.setVisibility(View.GONE);
-            // Clear search highlighting
-            optionsTextEditor.setText(optionsTextEditor.getText().toString());
+            // Clear search results and highlighting
+            clearSearchResults();
         }
     }
 
     private void searchInText(String searchTerm) {
         if (searchTerm.isEmpty()) {
-            // Clear highlighting
-            optionsTextEditor.setText(optionsTextEditor.getText().toString());
+            clearSearchResults();
             return;
         }
+        
+        // Update current search term and find all matches
+        currentSearchTerm = searchTerm;
+        findAllMatches(searchTerm);
         
         String text = optionsTextEditor.getText().toString();
         SpannableString spannable = new SpannableString(text);
         
-        int index = text.toLowerCase().indexOf(searchTerm.toLowerCase());
-        while (index >= 0) {
+        // Highlight all matches
+        for (int matchIndex : searchMatches) {
             spannable.setSpan(
                 new BackgroundColorSpan(0xFFFFFF00), // Yellow highlight color
-                index,
-                index + searchTerm.length(),
+                matchIndex,
+                matchIndex + searchTerm.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             );
-            index = text.toLowerCase().indexOf(searchTerm.toLowerCase(), index + 1);
         }
         
         optionsTextEditor.setText(spannable);
+        
+        // Reset match index when search term changes
+        currentMatchIndex = -1;
+    }
+
+    private void findAllMatches(String searchTerm) {
+        searchMatches.clear();
+        String text = optionsTextEditor.getText().toString();
+        String lowerText = text.toLowerCase();
+        String lowerSearchTerm = searchTerm.toLowerCase();
+        
+        int index = lowerText.indexOf(lowerSearchTerm);
+        while (index >= 0) {
+            searchMatches.add(index);
+            index = lowerText.indexOf(lowerSearchTerm, index + 1);
+        }
+    }
+
+    private void clearSearchResults() {
+        searchMatches.clear();
+        currentMatchIndex = -1;
+        currentSearchTerm = "";
+        // Clear highlighting by resetting text
+        String plainText = optionsTextEditor.getText().toString();
+        optionsTextEditor.setText(plainText);
     }
 
     private void closeOptionsEditor() {
@@ -533,30 +581,36 @@ public class DashboardFragment extends Fragment {
     }
 
     private void findNextMatch(String searchTerm) {
-        String text = optionsTextEditor.getText().toString();
-        String lowerText = text.toLowerCase();
-        String lowerSearchTerm = searchTerm.toLowerCase();
-        
-        int currentSelection = optionsTextEditor.getSelectionStart();
-        int nextIndex = lowerText.indexOf(lowerSearchTerm, currentSelection + 1);
-        
-        if (nextIndex == -1) {
-            // Search from beginning if not found after current position
-            nextIndex = lowerText.indexOf(lowerSearchTerm);
+        // If search term changed, find all matches first
+        if (!searchTerm.equals(currentSearchTerm)) {
+            currentSearchTerm = searchTerm;
+            findAllMatches(searchTerm);
+            currentMatchIndex = -1;
         }
         
-        if (nextIndex != -1) {
-            // Select the found text
-            optionsTextEditor.setSelection(nextIndex, nextIndex + searchTerm.length());
-            optionsTextEditor.requestFocus();
-            
-            // Scroll to make the selection visible
-            scrollToPosition(nextIndex);
-            
-            Toast.makeText(requireContext(), "Found match", Toast.LENGTH_SHORT).show();
-        } else {
+        if (searchMatches.isEmpty()) {
             Toast.makeText(requireContext(), "No matches found", Toast.LENGTH_SHORT).show();
+            return;
         }
+        
+        // Move to next match
+        currentMatchIndex++;
+        if (currentMatchIndex >= searchMatches.size()) {
+            currentMatchIndex = 0; // Wrap around to first match
+        }
+        
+        int matchPosition = searchMatches.get(currentMatchIndex);
+        
+        // Select the found text
+        optionsTextEditor.setSelection(matchPosition, matchPosition + searchTerm.length());
+        optionsTextEditor.requestFocus();
+        
+        // Scroll to make the selection visible
+        scrollToPosition(matchPosition);
+        
+        // Show current match info
+        String message = "Match " + (currentMatchIndex + 1) + " of " + searchMatches.size();
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void scrollToPosition(int position) {
