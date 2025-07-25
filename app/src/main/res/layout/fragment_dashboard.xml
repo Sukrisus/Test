@@ -148,18 +148,26 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/folderRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/surfaceVariant"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="wrap_content"
+                android:maxHeight="300dp"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="16dp"
+                android:padding="4dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/backupButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Backup &amp; Share"
-                android:icon="@android:drawable/ic_menu_save"
+                android:text="Create Backup"
+                android:icon="@drawable/ic_backup"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
                 android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary" />
+                android:textColor="@color/onPrimary"
+                app:cornerRadius="12dp"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
