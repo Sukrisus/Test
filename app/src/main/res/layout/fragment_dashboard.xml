@@ -154,20 +154,48 @@
                 android:layout_marginBottom="16dp"
                 android:padding="4dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/backupButton"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create Backup"
-                android:icon="@drawable/ic_backup"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/onPrimary"
-                app:cornerRadius="12dp"
-                android:padding="16dp"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/backupButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Create Backup"
+                    android:icon="@drawable/ic_backup"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    android:backgroundTint="@color/primary"
+                    android:textColor="@color/onPrimary"
+                    app:cornerRadius="12dp"
+                    android:padding="16dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/importButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Import Backup"
+                    android:icon="@drawable/ic_import"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    android:backgroundTint="@color/secondary"
+                    android:textColor="@color/onSecondary"
+                    app:cornerRadius="12dp"
+                    android:padding="16dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
