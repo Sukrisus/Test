@@ -1,0 +1,87 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0, v1.1, etc.
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+    
+    - name: Install NDK
+      run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;27.1.12297006"
+    
+    - name: Build debug APK
+      run: ./gradlew assembleDebug
+    
+    - name: Build release APK
+      run: ./gradlew assembleRelease
+    
+    - name: Copy APKs to workspace root
+      run: |
+        cp app/build/outputs/apk/debug/app-debug.apk ./app-debug.apk
+        cp app/build/outputs/apk/release/app-release-unsigned.apk ./app-release.apk
+    
+    - name: Get tag name
+      id: tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: Release ${{ steps.tag.outputs.tag }}
+        draft: false
+        prerelease: false
+        files: |
+          ./app-debug.apk
+          ./app-release.apk
+        body: |
+          ## Changes in ${{ steps.tag.outputs.tag }}
+          
+          ### 📱 Downloads
+          - **app-debug.apk** - Debug version with debugging enabled
+          - **app-release.apk** - Release version (unsigned)
+          
+          ### 🔧 Build Information
+          - Built with Android SDK 35
+          - Target SDK: 35
+          - Min SDK: 26
+          - NDK version: 27.1.12297006
+          
+          ### 📝 Installation
+          Download the APK file and install it on your Android device. You may need to enable "Install from unknown sources" in your device settings.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
