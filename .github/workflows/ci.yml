@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    # Run every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        api-level: [26, 35] # Test with min and target SDK levels
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+    
+    - name: Install required SDK components
+      run: |
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-${{ matrix.api-level }}"
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;27.1.12297006"
+    
+    - name: Run tests
+      run: ./gradlew test
+    
+    - name: Run lint check
+      run: ./gradlew lint
+    
+    - name: Build debug APK
+      run: ./gradlew assembleDebug
+    
+    - name: Upload lint reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lint-reports-api-${{ matrix.api-level }}
+        path: |
+          app/build/reports/lint-results-*.html
+          app/build/reports/lint-results-*.xml
+        retention-days: 7
+    
+    - name: Upload test reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-reports-api-${{ matrix.api-level }}
+        path: |
+          app/build/reports/tests/
+          app/build/test-results/
+        retention-days: 7
+    
+    - name: Upload APK (from matrix.api-level 35 only)
+      uses: actions/upload-artifact@v4
+      if: matrix.api-level == 35
+      with:
+        name: app-debug-ci
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 7

@@ -39,21 +39,58 @@
 
 > **Requirements:**
 > - Android Studio Giraffe or later
-> - Java 17
-> - Android SDK 33+
+> - Java 17+
+> - Android SDK 35+
 > - Git
 
+### 🏗️ Manual Build
+
+#### Option 1: Using Build Script (Recommended)
 ```bash
 # Clone the repository
 git clone https://github.com/Origin-Client/Origin.git
 cd Origin
 
-# Open in Android Studio and build or run:
+# Run the automated build script
+./build.sh
+```
+
+#### Option 2: Using Gradle Directly
+```bash
+# Clone the repository
+git clone https://github.com/Origin-Client/Origin.git
+cd Origin
+
+# Make gradlew executable (Linux/macOS)
+chmod +x gradlew
+
+# Build debug APK
 ./gradlew assembleDebug
+
+# Build release APK
+./gradlew assembleRelease
 ```
 
 📦 Output APK:  
-`app/build/outputs/apk/debug/app-debug.apk`
+- Debug: `app/build/outputs/apk/debug/app-debug.apk`
+- Release: `app/build/outputs/apk/release/app-release-unsigned.apk`
+
+### 🤖 Automated Builds
+
+This project includes GitHub Actions workflows for automated building:
+
+- **🔄 CI Workflow** - Runs on every push/PR with tests and lint checks
+- **📦 Build Workflow** - Creates APK artifacts on main branch updates  
+- **🚀 Release Workflow** - Automatically creates releases when tags are pushed
+
+#### Creating a Release
+```bash
+# Tag and push a new version
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+This will automatically trigger a build and create a GitHub release with APK files attached.
 
 ---
 
