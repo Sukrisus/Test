@@ -191,7 +191,7 @@ public class DashboardFragment extends Fragment {
 
     private void initializeModules(View view) {
         // Initialize config file path
-        configFile = new File("/storage/emulated/0/origin_mods/config.json");
+        configFile = new File(getContext().getExternalFilesDir(null), "origin_mods/config.json");
         
         // Get modules RecyclerView
         modulesRecyclerView = view.findViewById(R.id.modulesRecyclerView);
