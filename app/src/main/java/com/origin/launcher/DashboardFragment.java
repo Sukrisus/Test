@@ -201,7 +201,7 @@ public class DashboardFragment extends Fragment {
             // Initialize module items
             moduleItems = new ArrayList<>();
 moduleItems.add(new ModuleItem("no hurt cam", "allows you to toggle the in-game hurt cam", "Nohurtcam"));
-moduleItems.add(new ModuleItem("No Fog", "disables the in-game fog", "no_fog"));
+moduleItems.add(new ModuleItem("No Fog", "disables the in-game fog", "Nofog"));
             
             // Create and set adapter
             moduleAdapter = new ModuleAdapter(moduleItems, this::onModuleToggle);
@@ -275,7 +275,7 @@ moduleItems.add(new ModuleItem("No Fog", "disables the in-game fog", "no_fog"));
         
         JSONObject defaultConfig = new JSONObject();
         defaultConfig.put("Nohurtcam", false);
-        defaultConfig.put("no_fog", true);  // Add this line
+        defaultConfig.put("Nofog", false);  // Add this line
         
         try (FileWriter writer = new FileWriter(configFile)) {
             writer.write(defaultConfig.toString(2)); // Pretty print with indent
