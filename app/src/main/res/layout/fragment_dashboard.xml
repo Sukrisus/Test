@@ -215,6 +215,7 @@
 
         <!-- ScrollView for modules - height set to show approximately 4 modules -->
         <ScrollView
+            android:id="@+id/modulesScrollView"
             android:layout_width="match_parent"
             android:layout_height="320dp"
             android:background="@android:color/transparent"
