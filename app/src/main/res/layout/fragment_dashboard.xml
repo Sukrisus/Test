@@ -187,7 +187,8 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Modules Card -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Replace the Modules Card section with this fixed ScrollView version -->
+<com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -222,7 +223,12 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp"
             android:scrollbars="vertical"
-            android:fadeScrollbars="false">
+            android:fadeScrollbars="false"
+            android:nestedScrollingEnabled="true"
+            android:fillViewport="false"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarAlwaysDrawVerticalTrack="true">
 
             <LinearLayout
                 android:id="@+id/modulesContainer"
@@ -231,8 +237,6 @@
                 android:orientation="vertical">
 
                 <!-- Modules will be dynamically added here -->
-                <!-- Each module should be approximately 80dp in total height (including margins) -->
-                <!-- This allows 4 modules to be visible in the 320dp ScrollView -->
 
             </LinearLayout>
 
