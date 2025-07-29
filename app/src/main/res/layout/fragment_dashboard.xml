@@ -225,23 +225,26 @@
     android:scrollbars="vertical"
     android:fadeScrollbars="false"
     android:scrollbarStyle="outsideOverlay"
-    android:scrollbarSize="10dp"
+    android:scrollbarSize="8dp"
     android:paddingEnd="16dp"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:clipToPadding="false">
 
     <LinearLayout
         android:id="@+id/modulesContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="4dp">
+        android:orientation="vertical">
 
-        <!-- Modules will be dynamically added here -->
+        <!-- 
+          Your modules, which are added dynamically, will go here.
+          For scrolling to occur, the total height of the content in this 
+          LinearLayout must exceed the 320dp height of the NestedScrollView.
+        -->
 
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
+
         <!-- Config Management Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
