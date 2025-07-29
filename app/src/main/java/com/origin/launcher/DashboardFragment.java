@@ -490,73 +490,7 @@ public class DashboardFragment extends Fragment {
             File parentDir = configFile.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 boolean created = parentDir.mkdirs();
-                if (!created) {
-                    Toast.makeText(requireContext(), "Failed to create config directory", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-            
-            JSONObject defaultConfig = new JSONObject();
-            defaultConfig.put("Nohurtcam", false);
-            defaultConfig.put("Nofog", false);
-            defaultConfig.put("particles_disabler", false);
-            defaultConfig.put("java_clouds", false);
-            defaultConfig.put("java_cubemap", false);
-            defaultConfig.put("classic_skins", false);
-            
-            try (FileWriter writer = new FileWriter(configFile)) {
-                writer.write(defaultConfig.toString(2)); // Pretty print with indent
-            }
-            
-        } catch (IOException | JSONException e) {
-            Toast.makeText(requireContext(), "Failed to create default config: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-    
-    private void updateConfigFile(String key, boolean value) {
-        try {
-            JSONObject config;
-            
-            if (configFile.exists()) {
-                // Read existing config
-                StringBuilder content = new StringBuilder();
-                try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line);
-                    }
-                }
-                config = new JSONObject(content.toString());
-            } else {
-                // Create new config and ensure directory exists
-                config = new JSONObject();
-                File parentDir = configFile.getParentFile();
-                if (parentDir != null && !parentDir.exists()) {
-                    boolean created = parentDir.mkdirs();
-                    if (!created) {
-                        Toast.makeText(requireContext(), "Failed to create config directory", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-            }
-            
-            // Update the specific key
-            config.put(key, value);
-            
-            // Write back to file
-            try (FileWriter writer = new FileWriter(configFile)) {
-                writer.write(config.toString(2)); // Pretty print with indent
-            }
-            
-        } catch (IOException | JSONException e) {
-            Toast.makeText(requireContext(), "Failed to update config: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    // REST OF THE CODE REMAINS THE SAME...
-    // (All the other methods like openFileChooser, openSaveLocationChooser, etc. remain unchanged)
+     
 
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -1280,6 +1214,62 @@ public class DashboardFragment extends Fragment {
         }
         void bind(String folderName) {
             textView.setText(folderName);
+        }
+    }
+    
+    // Module adapter
+    private static class ModuleAdapter extends RecyclerView.Adapter<ModuleViewHolder> {
+        private final List<ModuleItem> modules;
+        private final ModuleToggleListener toggleListener;
+        
+        ModuleAdapter(List<ModuleItem> modules, ModuleToggleListener toggleListener) {
+            this.modules = modules;
+            this.toggleListener = toggleListener;
+        }
+        
+        @NonNull
+        @Override
+        public ModuleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_module, parent, false);
+            return new ModuleViewHolder(view);
+        }
+        
+        @Override
+        public void onBindViewHolder(@NonNull ModuleViewHolder holder, int position) {
+            holder.bind(modules.get(position), toggleListener);
+        }
+        
+        @Override
+        public int getItemCount() { return modules.size(); }
+    }
+    
+    private static class ModuleViewHolder extends RecyclerView.ViewHolder {
+        private final TextView moduleNameText;
+        private final TextView moduleDescriptionText;
+        private final MaterialSwitch moduleToggleSwitch;
+        
+        ModuleViewHolder(@NonNull View itemView) {
+            super(itemView);
+            moduleNameText = itemView.findViewById(R.id.moduleNameText);
+            moduleDescriptionText = itemView.findViewById(R.id.moduleDescriptionText);
+            moduleToggleSwitch = itemView.findViewById(R.id.moduleToggleSwitch);
+        }
+        
+        void bind(ModuleItem module, ModuleToggleListener toggleListener) {
+            moduleNameText.setText(module.getName());
+            moduleDescriptionText.setText(module.getDescription());
+            
+            // Set switch state without triggering listener
+            moduleToggleSwitch.setOnCheckedChangeListener(null);
+            moduleToggleSwitch.setChecked(module.isEnabled());
+            
+            // Set listener after setting state
+            moduleToggleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                module.setEnabled(isChecked);
+                if (toggleListener != null) {
+                    toggleListener.onToggle(module, isChecked);
+                }
+            });
         }
     }
 }

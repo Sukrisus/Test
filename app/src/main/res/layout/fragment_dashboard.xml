@@ -215,8 +215,8 @@
             android:layout_marginBottom="16dp" />
 
         <!-- ScrollView for modules - height set to show approximately 4 modules -->
-        <androidx.core.widget.NestedScrollView
-    android:id="@+id/modulesScrollView"
+    <ScrollView
+            android:id="@+id/modulesScrollView"
     android:layout_width="match_parent"
     android:layout_height="320dp"
     android:background="@android:color/transparent"
@@ -229,21 +229,17 @@
     android:paddingEnd="16dp"
     android:clipToPadding="false">
 
-    <LinearLayout
-        android:id="@+id/modulesContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/modulesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <!-- 
-          Your modules, which are added dynamically, will go here.
-          For scrolling to occur, the total height of the content in this 
-          LinearLayout must exceed the 320dp height of the NestedScrollView.
-        -->
+                <!-- Modules will be dynamically added here -->
 
-    </LinearLayout>
+            </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+        </ScrollView>
 
         <!-- Config Management Buttons -->
         <LinearLayout
