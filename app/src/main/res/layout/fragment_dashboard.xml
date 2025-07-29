@@ -215,8 +215,8 @@
             android:layout_marginBottom="16dp" />
 
         <!-- ScrollView for modules - height set to show approximately 4 modules -->
-        <ScrollView
-            android:id="@+id/modulesScrollView"
+        <androidx.core.widget.NestedScrollView
+    android:id="@+id/modulesScrollView"
     android:layout_width="match_parent"
     android:layout_height="320dp"
     android:background="@android:color/transparent"
@@ -225,22 +225,23 @@
     android:scrollbars="vertical"
     android:fadeScrollbars="false"
     android:scrollbarStyle="outsideOverlay"
-    android:scrollbarSize="8dp"
+    android:scrollbarSize="10dp"
     android:paddingEnd="16dp"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-            <LinearLayout
-                android:id="@+id/modulesContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/modulesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="4dp">
 
-                <!-- Modules will be dynamically added here -->
+        <!-- Modules will be dynamically added here -->
 
-            </LinearLayout>
+    </LinearLayout>
 
-        </ScrollView>
-
+</androidx.core.widget.NestedScrollView>
         <!-- Config Management Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
