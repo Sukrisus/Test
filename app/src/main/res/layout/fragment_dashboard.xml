@@ -217,18 +217,17 @@
         <!-- ScrollView for modules - height set to show approximately 4 modules -->
         <ScrollView
             android:id="@+id/modulesScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:background="@android:color/transparent"
-            android:padding="8dp"
-            android:layout_marginBottom="16dp"
-            android:scrollbars="vertical"
-            android:fadeScrollbars="false"
-            android:nestedScrollingEnabled="true"
-            android:fillViewport="false"
-            android:overScrollMode="always"
-            android:scrollbarStyle="insideOverlay"
-            android:scrollbarAlwaysDrawVerticalTrack="true">
+    android:layout_width="match_parent"
+    android:layout_height="320dp"
+    android:background="@android:color/transparent"
+    android:padding="8dp"
+    android:layout_marginBottom="16dp"
+    android:scrollbars="vertical"
+    android:fadeScrollbars="false"
+    android:scrollbarStyle="outsideOverlay"
+    android:scrollbarSize="8dp"
+    android:paddingEnd="16dp"
+    android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/modulesContainer"
